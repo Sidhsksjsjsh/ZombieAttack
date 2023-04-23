@@ -11,7 +11,7 @@ local Window = library:AddWindow("Orin - Cheat",
 local T1 = Window:AddTab("Farm")
 local T2 = Window:AddTab("Tool")
 
-local zombieConsole = Test:AddConsole({
+local zombieConsole = T1:AddConsole({
     ["y"] = 50,
     ["source"] = "",
 })
