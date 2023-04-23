@@ -9,10 +9,14 @@ local Window = library:AddWindow("Orin - Cheat",
     })
     
 local T1 = Window:AddTab("Farm")
+ocal T4 = Window:AddTab("esp")
 local T2 = Window:AddTab("Tool")
-local T3 = Window:AddTab("Player list")
+local T3 = Window:AddTab("Anti-Afk")
+local T5 = Window:AddTab("Misc")
+local T6 = Window:AddTab("Player")
+local T7 = Window:AddTab("Stats")
 
-local PlayerList = T3:AddConsole({
+local Statslist = T7:AddConsole({
     ["y"] = 50,
     ["source"] = "",
 })
@@ -185,8 +189,140 @@ elseif _G.iszombie then
 end
 end)
 
-while wait(0.5) do
-for _,IndexGame in pairs(game.Players:GetPlayers()) do
-PlayerList:Set(IndexGame.Name .. "\n")
+
+
+
+T4:AddButton("zombie esp", function()
+local BillboardGui = Instance.new('BillboardGui') -- Makes Billboardgui
+local TextLabel = Instance.new('TextLabel',BillboardGui)
+
+BillboardGui.Name = "esp"
+BillboardGui.AlwaysOnTop = true -- if its on top or not
+BillboardGui.Size = UDim2.new(0, 50, 0, 50) -- size of it
+BillboardGui.StudsOffset = Vector3.new(0,0,0)
+
+TextLabel.BackgroundTransparency = 1 -- transparency
+TextLabel.Size = UDim2.new(3, 5, 3, 5) -- size
+TextLabel.TextColor3 = Color3.new(1, 0, 0) -- color
+TextLabel.TextScaled = false -- if the text is scaled or not
+game:GetService("RunService").RenderStepped:Connect(function()
+	for i,v in pairs(game.Workspace.enemies:GetDescendants()) do
+		if v.Parent.Name == "HumanoidRootPart" and v.Parent:FindFirstChild("esp")==nil  then
+			TextLabel.Text = v.Parent.Parent.Name
+			BillboardGui:Clone().Parent = v.Parent
+		end
+	end
+end)
+end)
+
+
+
+
+T2:AddButton("Btools", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/T0qaXjAR", true))()
+end)
+
+T5:AddButton("Infinite Jump", function()
+local InfiniteJumpEnabled = true
+game:GetService("UserInputService").JumpRequest:connect(function()
+	if InfiniteJumpEnabled then
+		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+	end
+end)
+end)
+
+T5:AddButton("Gravity", function()
+game.Workspace.Gravity = 3
+end)
+
+T1:AddSwitch("wallbang V1", function(State)
+getgenv().WALLBANG = State
+local OldNameCall = nil
+OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
+  local Args = {...}
+    if getnamecallmethod() == "FindPartOnRayWithIgnoreList" and getgenv().WALLBANG then
+       table.insert(Args[2], workspace.map)
+    end
+    return OldNameCall(self, ...)
+end) 
+end)
+
+T1:AddSwitch("wallbang V2", function(State)
+getgenv().Wallbang = State
+
+-- normal patched wallbang
+
+local mt = getrawmetatable(game)
+local namecallold = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = newcclosure(function(self, ...)
+    local Args = {...}
+    NamecallMethod = getnamecallmethod()
+    if getgenv().Wallbang and tostring(NamecallMethod) == "FindPartOnRayWithIgnoreList" then
+        table.insert(Args[2], workspace.Map)
+    end
+    return namecallold(self, ...)
+end)
+-- WALLBANG BYPASS
+loadstring(game:HttpGet("https://pastebin.pl/view/raw/93ee6b4f", true))() -- credits to bolts and the 3 bakers and Finny for this
+setreadonly(mt, true)
+end)		
+
+T1:AddButton("Immortal", function()
+game.Players.LocalPlayer.Character.Humanoid:Remove()
+Instance.new('Humanoid', game.Players.LocalPlayer.Character)
+game:GetService("Workspace")[game.Players.LocalPlayer.Name]:FindFirstChildOfClass(
+'Humanoid').HipHeight = 2
+end)
+
+T1:AddButton("Bullet track V2", function()
+local oPlBfNRNfyJz = game.Players.LocalPlayer;local ZtYjkXDgMlxc = "Head";local dAociCiEvJMB = function()local QInaUnazu = math.huge;local J8IhabzuN = nil;for iUIhaztYUbnZ,uUhsabzyuG in next, game.Workspace:GetDescendants() do if uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc) and oPlBfNRNfyJz.Character:FindFirstChild(ZtYjkXDgMlxc) and not uUhsabzyuG:FindFirstChild('Guns') and uUhsabzyuG.Parent.Name ~= "deadenemies" then local IIhzabUtd = (uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc).Position-oPlBfNRNfyJz.Character.Head.Position).magnitude;if IIhzabUtd < QInaUnazu then QInaUnazu = IIhzabUtd;J8IhabzuN = uUhsabzyuG;end;end;end;return J8IhabzuN;end;local GtsZsUbJOuJk = oPlBfNRNfyJz:GetMouse();local tZcInsImQQfX = getrawmetatable(game);local sCtxkbklLnmy = tZcInsImQQfX.__index;setreadonly(tZcInsImQQfX,false);tZcInsImQQfX.__index = newcclosure(function(hFcjBtZBXthW,tGNxqMIMabVS)if hFcjBtZBXthW == GtsZsUbJOuJk and tostring(tGNxqMIMabVS) == "Hit" then return dAociCiEvJMB():FindFirstChild(ZtYjkXDgMlxc).CFrame;end;return sCtxkbklLnmy(hFcjBtZBXthW,tGNxqMIMabVS)end)setreadonly(tZcInsImQQfX,true)
+end)
+
+T1:AddButton("Extended Hitbox", function()
+_G.HeadSize = 25
+local enemies = workspace.enemies
+while wait() do
+  for _,v in next, enemies:GetChildren() do
+if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+pcall(function()
+       v.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
+     v.HumanoidRootPart.Material = "Neon"
+       v.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
+       v.HumanoidRootPart.Transparency = 0.7
+       v.HumanoidRootPart.CanCollide = false
+end)
 end
+  end
 end
+end)
+
+T6:AddTextBox("speed", function(e)
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed=e 
+end)
+
+T6:AddTextBox("jump", function(e)
+game.Players.LocalPlayer.Character.Humanoid.JumpPower=e 
+end)
+
+T3:AddButton("Anti-Afk", function()
+		local vu = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:connect(function()
+   vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+   wait(1)
+   vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end)
+end)
+
+T3:AddButton("Anti-Lag", function()
+	for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
+    if v:IsA("BasePart") and not v.Parent:FindFirstChild("Humanoid") then
+        v.Material = Enum.Material.SmoothPlastic
+        if v:IsA("Texture") then
+            v:Destroy()
+        end
+    end
+end	
+end)		
+
+Statslist:Set("Kills: ? \nLevels: ? \nMoney: ?")
