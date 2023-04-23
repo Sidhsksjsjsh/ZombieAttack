@@ -73,7 +73,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 if(_G.farm2==true)then
 local target = getNearest()
 if(target~=nil)then
-game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, target.Head.Position)
+game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(target.Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (target.HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
 _G.globalTarget = target
 end
@@ -122,7 +122,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 if(_G.farm3==true)then
 local target = getNearest()
 if(target~=nil)then
-game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, target.Head.Position)
+game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(target.Head.Position)
 -- Player.Character.HumanoidRootPart.CFrame = (target.HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
 _G.globalTarget2 = target
 end
