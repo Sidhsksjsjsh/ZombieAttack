@@ -79,12 +79,7 @@ _G.globalTarget = target
 end
 end
 end)
-spawn(function()
-while wait() do
-game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
-game.Players.LocalPlayer.Character.Torso.Velocity = Vector3.new(0,0,0)
-end
-end)
+
 while wait() do
 if(_G.farm2==true and _G.globalTarget~=nil and _G.globalTarget:FindFirstChild("Head") and Player.Character:FindFirstChildOfClass("Tool"))then
 local target = _G.globalTarget
@@ -120,28 +115,24 @@ end
 return nearest
 end
 
-_G.farm2 = bool
+_G.farm3 = bool
 
-_G.globalTarget = nil
+_G.globalTarget_2 = nil
 game:GetService("RunService").RenderStepped:Connect(function()
-if(_G.farm2==true)then
+if(_G.farm3==true)then
 local target = getNearest()
 if(target~=nil)then
 -- game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, target.Head.Position)
 -- Player.Character.HumanoidRootPart.CFrame = (target.HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
-_G.globalTarget = target
+_G.globalTarget_2 = target
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = _G.globalTarget_2.Head.Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = _G.globalTarget_2.Head, ["Origin"] = _G.globalTarget_2.Head.Position, ["Pos"] = _G.globalTarget_2.Head.Position,})
 end
 end
 end)
-spawn(function()
+
 while wait() do
-game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
-game.Players.LocalPlayer.Character.Torso.Velocity = Vector3.new(0,0,0)
-end
-end)
-while wait() do
-if(_G.farm2==true and _G.globalTarget~=nil and _G.globalTarget:FindFirstChild("Head") and Player.Character:FindFirstChildOfClass("Tool"))then
-local target = _G.globalTarget
+if(_G.farm3==true and _G.globalTarget_2~=nil and _G.globalTarget_2:FindFirstChild("Head") and Player.Character:FindFirstChildOfClass("Tool"))then
+local target = _G.globalTarget_2
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = target.Head.Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = target.Head, ["Origin"] = target.Head.Position, ["Pos"] = target.Head.Position,})
 wait()
 end
