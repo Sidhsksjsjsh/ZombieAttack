@@ -89,7 +89,7 @@ end
 end
 end)
 
-T1:AddSwitch("Bullet tracker", function(bool)
+T1:AddSwitch("aimbot", function(bool)
 	local groundDistance = 8
 local Player = game:GetService("Players").LocalPlayer
 local function getNearest()
@@ -117,26 +117,29 @@ end
 
 _G.farm3 = bool
 
-_G.globalTarget_2 = nil
+_G.globalTarget2 = nil
 game:GetService("RunService").RenderStepped:Connect(function()
 if(_G.farm3==true)then
 local target = getNearest()
 if(target~=nil)then
--- game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, target.Head.Position)
+game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, target.Head.Position)
 -- Player.Character.HumanoidRootPart.CFrame = (target.HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
-_G.globalTarget_2 = target
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = _G.globalTarget_2.Head.Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = _G.globalTarget_2.Head, ["Origin"] = _G.globalTarget_2.Head.Position, ["Pos"] = _G.globalTarget_2.Head.Position,})
+_G.globalTarget2 = target
 end
 end
 end)
 
 while wait() do
-if(_G.farm3==true and _G.globalTarget_2~=nil and _G.globalTarget_2:FindFirstChild("Head") and Player.Character:FindFirstChildOfClass("Tool"))then
-local target = _G.globalTarget_2
+if(_G.farm3==true and _G.globalTarget2~=nil and _G.globalTarget2:FindFirstChild("Head") and Player.Character:FindFirstChildOfClass("Tool"))then
+local target = _G.globalTarget2
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = target.Head.Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = target.Head, ["Origin"] = target.Head.Position, ["Pos"] = target.Head.Position,})
 wait()
 end
 end
+end)
+
+T1:AddSwitch("Bullet tracker", function(bool)
+	local oPlBfNRNfyJz = game.Players.LocalPlayer;local ZtYjkXDgMlxc = "Head";local dAociCiEvJMB = function()local QInaUnazu = math.huge;local J8IhabzuN = nil;for iUIhaztYUbnZ,uUhsabzyuG in next, game.Workspace:GetDescendants() do if uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc) and oPlBfNRNfyJz.Character:FindFirstChild(ZtYjkXDgMlxc) and not uUhsabzyuG:FindFirstChild('Guns') and uUhsabzyuG.Parent.Name ~= "deadenemies" then local IIhzabUtd = (uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc).Position-oPlBfNRNfyJz.Character.Head.Position).magnitude;if IIhzabUtd < QInaUnazu then QInaUnazu = IIhzabUtd;J8IhabzuN = uUhsabzyuG;end;end;end;return J8IhabzuN;end;local GtsZsUbJOuJk = oPlBfNRNfyJz:GetMouse();local tZcInsImQQfX = getrawmetatable(game);local sCtxkbklLnmy = tZcInsImQQfX.__index;setreadonly(tZcInsImQQfX,false);tZcInsImQQfX.__index = newcclosure(function(hFcjBtZBXthW,tGNxqMIMabVS)if hFcjBtZBXthW == GtsZsUbJOuJk and tostring(tGNxqMIMabVS) == "Hit" then return dAociCiEvJMB():FindFirstChild(ZtYjkXDgMlxc).CFrame;end;return sCtxkbklLnmy(hFcjBtZBXthW,tGNxqMIMabVS)end)setreadonly(tZcInsImQQfX,true)
 end)
 
 T1:AddSwitch("kill platform", function(bool)
@@ -151,7 +154,7 @@ platform.Anchored = true
 platform.Position = Vector3.new(555,555,555)
 root.CFrame = platform.CFrame * CFrame.new(0,4,0)
  
-if workspace:FindFirstChild(plr.Name) then
+if workspace:FindFirstChild(plr) then
    zombieConsole:Set('You are not a zombie!')
 else
    zombieConsole('You are a zombie!')
