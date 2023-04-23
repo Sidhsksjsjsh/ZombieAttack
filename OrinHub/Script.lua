@@ -11,10 +11,28 @@ local Window = library:AddWindow("Orin - Cheat",
 local T1 = Window:AddTab("Farm")
 local T2 = Window:AddTab("Tool")
 
-local customBoothText = Test:AddConsole({
+local zombieConsole = Test:AddConsole({
     ["y"] = 50,
     ["source"] = "",
 })
+
+zombieConsole:Set('You are not a zombie!')
+
+T2:AddButton("Equip all knife", function()
+for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
+if Thing:IsA("Tool") then
+Thing.Parent = game.Players.LocalPlayer.Backpack
+end
+end
+end)
+
+T2:AddButton("Equip all knife", function()
+for _,Thing in pairs(game.ReplicatedStorage.Guns:GetChildren()) do
+if Thing:IsA("Tool") then
+Thing.Parent = game.Players.LocalPlayer.Backpack
+end
+end
+end)
 
 T1:AddSwitch("Bullet Track", function(bool)
 	local groundDistance = 8
@@ -70,3 +88,45 @@ end
 end
 end)
 
+T1:AddSwitch("kill platform", function(bool)
+local plr = game:service('Players').LocalPlayer
+local char = plr.Character
+local root = char.HumanoidRootPart
+_G.iszombie = bool
+ 
+platform = Instance.new('Part', workspace)
+platform.Size = Vector3.new(100,0,100)
+platform.Anchored = true
+platform.Position = Vector3.new(555,555,555)
+root.CFrame = platform.CFrame * CFrame.new(0,4,0)
+ 
+if workspace:FindFirstChild(plr.Name) then
+   zombieConsole:Set('You are not a zombie!')
+else
+   zombieConsole('You are a zombie!')
+end
+ 
+wait(.5)
+ 
+if not _G.iszombie then
+   for _, a in pairs(workspace.enemies:children()) do
+       for _, b in pairs(a:children()) do
+           if b:IsA'Part' then
+               b.Anchored = true
+               b.CFrame = root.CFrame * CFrame.new(2,0,2)
+           end
+       end
+   end
+elseif _G.iszombie then
+   for _, a in pairs(game:service'Players':GetPlayers()) do
+       if a.Character then
+           for _, b in pairs(a.Character:children()) do
+               if b:IsA'Part' and a.Name ~= plr.Name then
+                   b.Anchored = true
+                   b.CFrame =  root.CFrame * CFrame.new(2,0,2)
+               end
+           end
+       end
+   end
+end
+end)
