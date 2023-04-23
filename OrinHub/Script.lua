@@ -9,7 +9,7 @@ local Window = library:AddWindow("Orin - Cheat",
     })
     
 local T1 = Window:AddTab("Farm")
-ocal T4 = Window:AddTab("esp")
+local T4 = Window:AddTab("esp")
 local T2 = Window:AddTab("Tool")
 local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
