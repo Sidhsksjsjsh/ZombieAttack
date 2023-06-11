@@ -41,14 +41,14 @@ function getEquippedWeapon(player)
             return "None"
         end
     end
---[[
+
 function KillZombies()
 if isBoss() then
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
 local args = {
     [1] = {
         ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = v.Head.Position
+        ["Direction"] = v.Head.Position,
         ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
         ["Hit"] = v.Head,
         ["Origin"] = v.Head.Position,
@@ -63,7 +63,7 @@ for _,v in pairs(workspace.enemies:GetChildren()) do
 local args = {
     [1] = {
         ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = v.Head.Position
+        ["Direction"] = v.Head.Position,
         ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
         ["Hit"] = v.Head,
         ["Origin"] = v.Head.Position,
@@ -206,20 +206,7 @@ T1:AddSwitch("Instant Kill (equip gun)", function(bool)
 _G.RepeatKill = bool
 while wait() do
 if _G.RepeatKill == false then break end
-for _,v in pairs(workspace.enemies:GetChildren()) do
-local args = {
-    [1] = {
-        ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = v.Head.Position
-        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
-        ["Hit"] = v.Head,
-        ["Origin"] = v.Head.Position,
-        ["Pos"] = v.Head.Position
-    }
-}
-
-game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
-end
+KillZombies()
 end
 end)
 
