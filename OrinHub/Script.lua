@@ -15,6 +15,66 @@ local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
 local T6 = Window:AddTab("Player")
 local T7 = Window:AddTab("Stats")
+local workspace = game:GetService("Workspace")
+
+function bossCheck()
+for _,v in pairs(workspace.BossFolder:GetChildren()) do
+	return v
+end
+end
+
+function isBoss()
+if workspace.BossFolder:FindFirstChild(bossCheck()) then
+	return true
+else
+	return false
+end
+end
+
+function getEquippedWeapon(player)
+        local char = player.Character
+        local weapon = char and char:FindFirstChildWhichIsA("Tool")
+    
+        if weapon ~= nil then
+            return weapon.Name
+        else
+            return "None"
+        end
+    end
+
+function KillZombies()
+if isBoss() then
+for _,v in pairs(workspace.BossFolder:GetChildren()) do
+local args = {
+    [1] = {
+        ["Normal"] = Vector3.new(0,0,0),
+        ["Direction"] = v.Head.Position
+        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
+        ["Hit"] = v.Head,
+        ["Origin"] = v.Head.Position,
+        ["Pos"] = v.Head.Position
+    }
+}
+
+game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
+end
+else
+for _,v in pairs(workspace.enemies:GetChildren()) do
+local args = {
+    [1] = {
+        ["Normal"] = Vector3.new(0,0,0),
+        ["Direction"] = v.Head.Position
+        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
+        ["Hit"] = v.Head,
+        ["Origin"] = v.Head.Position,
+        ["Pos"] = v.Head.Position
+    }
+}
+
+game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
+end
+end
+end
 
 local Statslist = T7:AddConsole({
     ["y"] = 50,
@@ -139,6 +199,14 @@ local target = _G.globalTarget2
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = target.Head.Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = target.Head, ["Origin"] = target.Head.Position, ["Pos"] = target.Head.Position,})
 wait()
 end
+end
+end)
+
+T1:AddSwitch("Instant Kill (equip gun)", function(bool)
+_G.RepeatKill = bool
+while wait() do
+if _G.RepeatKill == false then break end
+KillZombies()
 end
 end)
 
