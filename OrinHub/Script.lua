@@ -233,8 +233,8 @@ gmt.__namecall = newcclosure(function(self, ...)
                       Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = v.Head.Position
                       Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
-                      Args[1]["Hit"] = v.Head
-                      Args[1]["Origin"] = v.Head.Position
+                      Args[1]["Hit"] = v.Torso
+                      --Args[1]["Origin"] = v.Head.Position
                       Args[1]["Pos"] = v.Head.Position
 		end
                     return self.FireServer(self, unpack(Args))
