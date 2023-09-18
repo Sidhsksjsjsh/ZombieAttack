@@ -210,8 +210,37 @@ KillZombies()
 end
 end)
 
-T1:AddButton("Bullet tracker (Follow zombies)", function()
-	local oPlBfNRNfyJz = game.Players.LocalPlayer;local ZtYjkXDgMlxc = "Head";local dAociCiEvJMB = function()local QInaUnazu = math.huge;local J8IhabzuN = nil;for iUIhaztYUbnZ,uUhsabzyuG in next, game.Workspace:GetDescendants() do if uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc) and oPlBfNRNfyJz.Character:FindFirstChild(ZtYjkXDgMlxc) and not uUhsabzyuG:FindFirstChild('Guns') and uUhsabzyuG.Parent.Name ~= "deadenemies" then local IIhzabUtd = (uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc).Position-oPlBfNRNfyJz.Character.Head.Position).magnitude;if IIhzabUtd < QInaUnazu then QInaUnazu = IIhzabUtd;J8IhabzuN = uUhsabzyuG;end;end;end;return J8IhabzuN;end;local GtsZsUbJOuJk = oPlBfNRNfyJz:GetMouse();local tZcInsImQQfX = getrawmetatable(game);local sCtxkbklLnmy = tZcInsImQQfX.__index;setreadonly(tZcInsImQQfX,false);tZcInsImQQfX.__index = newcclosure(function(hFcjBtZBXthW,tGNxqMIMabVS)if hFcjBtZBXthW == GtsZsUbJOuJk and tostring(tGNxqMIMabVS) == "Hit" then return dAociCiEvJMB():FindFirstChild(ZtYjkXDgMlxc).CFrame;end;return sCtxkbklLnmy(hFcjBtZBXthW,tGNxqMIMabVS)end)setreadonly(tZcInsImQQfX,true)
+--[[local args = {
+    [1] = {
+        ["Normal"] = Vector3.new(-0.4952230751514435, -0.25188109278678894, -0.8314506411552429),
+        ["Direction"] = Vector3.new(306.7234802246094, -347.1536865234375, 381.320068359375),
+        ["Name"] = "Retribution Ray",
+        ["Hit"] = workspace["enemies"]:FindFirstChild("Enraged Zombie")["Torso"],
+        ["Origin"] = Vector3.new(-77.44005584716797, 16.690959930419922, -137.10328674316406),
+        ["Pos"] = Vector3.new(-65.88217163085938, 3.6095950603485107, -122.7344741821289)
+    }
+}]]
+--v.Head.Position
+T1:AddButton("Bullet tracker [Work] [One click]", function()
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+gmt.__namecall = newcclosure(function(self, ...)
+                local Args = {...}
+                local method = getnamecallmethod()
+                if tostring(self) == "Gun" and tostring(method) == "FireServer" then
+		for _,v in pairs(workspace.enemies:GetChildren()) do
+                      Args[1]["Normal"] = Vector3.new(0,0,0),
+                      Args[1]["Direction"] = v.Head.Position,
+                      Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
+                      Args[1]["Hit"] = v.Head,
+                      Args[1]["Origin"] = v.Head.Position,
+                      Args[1]["Pos"] = v.Head.Position
+                    return self.FireServer(self, unpack(Args))
+                end
+	end
+                return oldNamecall(self, ...)
+            end)
 end)
 
 T1:AddSwitch("kill platform", function(bool)
