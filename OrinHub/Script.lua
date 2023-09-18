@@ -231,11 +231,11 @@ gmt.__namecall = newcclosure(function(self, ...)
                 if tostring(self) == "Gun" and tostring(method) == "FireServer" then
 		for _,v in pairs(workspace.enemies:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
-                      Args[1]["Direction"] = v.Head.Position
+                      Args[1]["Direction"] = v.Torso.Position
                       Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
                       Args[1]["Hit"] = v.Torso
-                      --Args[1]["Origin"] = v.Head.Position
-                      Args[1]["Pos"] = v.Head.Position
+                      Args[1]["Origin"] = v.Torso.Position
+                      Args[1]["Pos"] = v.Torso.Position
 		end
                     return self.FireServer(self, unpack(Args))
                 end
