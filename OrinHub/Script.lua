@@ -221,7 +221,7 @@ end)
     }
 }]]
 --v.Head.Position
-T1:AddButton("Bullet tracker [Gun] [Work] [One click] [Damage only]", function()
+T1:AddButton("Bullet tracker [Gun] [One click] [Damage only]", function()
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
@@ -229,16 +229,6 @@ gmt.__namecall = newcclosure(function(self, ...)
                 local Args = {...}
                 local method = getnamecallmethod()
                 if tostring(self) == "Gun" and tostring(method) == "FireServer" then
-		if isBoss() then
-		for _,v in pairs(workspace.BossFolder:GetChildren()) do
-                      Args[1]["Normal"] = Vector3.new(0,0,0)
-                      Args[1]["Direction"] = v.Torso.Position
-                      Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
-                      Args[1]["Hit"] = v.Torso
-                      Args[1]["Origin"] = v.Torso.Position
-                      Args[1]["Pos"] = v.Torso.Position
-		end
-		else
 		for _,v in pairs(workspace.enemies:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = v.Torso.Position
@@ -246,7 +236,6 @@ gmt.__namecall = newcclosure(function(self, ...)
                       Args[1]["Hit"] = v.Torso
                       Args[1]["Origin"] = v.Torso.Position
                       Args[1]["Pos"] = v.Torso.Position
-		end
 		end
                     return self.FireServer(self, unpack(Args))
                 end
@@ -254,7 +243,7 @@ gmt.__namecall = newcclosure(function(self, ...)
             end)
 end)
 
-T1:AddButton("Knife tracker [Throw and Hit] [Work] [One click] [Damage only]", function()
+T1:AddButton("Knife tracker [Throw and Hit] [One click] [Damage only]", function()
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
@@ -262,16 +251,9 @@ gmt.__namecall = newcclosure(function(self, ...)
                 local Args = {...}
                 local method = getnamecallmethod()
                 if tostring(self) == "forhackers" and tostring(method) == "InvokeServer" then
-		if isBoss() then
-		for _,v in pairs(workspace.BossFolder:GetChildren()) do
-		      --Args[2] = getEquippedWeapon(game.Players.LocalPlayer)
-                      Args[3] = v.Torso
-		end
-		else
 		for _,v in pairs(workspace.enemies:GetChildren()) do
                       --Args[2] = getEquippedWeapon(game.Players.LocalPlayer)
                       Args[3] = v.Torso
-		end
 		end
                     return self.InvokeServer(self, unpack(Args))
                 end
