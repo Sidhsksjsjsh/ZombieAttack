@@ -240,7 +240,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                 local Args = {...}
                 local method = getnamecallmethod()
                 if tostring(self) == "Gun" and tostring(method) == "FireServer" then
-		if BossList() == "Boss" and BossDistance() < 100 then
+		if BossList() == "Boss" then
 		for _,v in pairs(workspace.BossFolder:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = v.Torso.Position
@@ -249,7 +249,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                       Args[1]["Origin"] = v.Torso.Position
                       Args[1]["Pos"] = v.Torso.Position
 		end
-		elseif BossList() == "Zombie" and ZombieDistance() < 100 then
+		elseif BossList() == "Zombie" then
 		for _,v in pairs(workspace.enemies:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = v.Torso.Position
