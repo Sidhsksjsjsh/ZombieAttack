@@ -43,18 +43,14 @@ function BossList()
 end
 
 function ZombieDistance()
-	playerpos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
 	for _,v in pairs(workspace.enemies:GetChildren()) do
-	    zombiepos = v.HumanoidRootPart.Position
-	    return (playerpos - zombiepos).Magnitude
+	    return (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude
     end
 end
 
 function BossDistance()
-	playerpos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
 	for _,v in pairs(workspace.BossFolder:GetChildren()) do
-	    bosspos = v.HumanoidRootPart.Position
-	    return (playerpos - bosspos).Magnitude
+	    return (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude
     end
 end
 
