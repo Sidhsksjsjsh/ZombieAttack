@@ -14,12 +14,12 @@ local T2 = Window:AddTab("Tool")
 local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
 local T6 = Window:AddTab("Player")
-local T7 = Window:AddTab("Stats")
+local T7 = Window:AddTab("Misc")
 local workspace = game:GetService("Workspace")
 
 function bossCheck()
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
-	return v
+	return v.Name
 end
 end
 
@@ -29,6 +29,14 @@ if workspace.BossFolder:FindFirstChild(bossCheck()) then
 else
 	return false
 end
+end
+
+function BossList()
+	if workspace.BossFolder:FindFirstChild("Mega Tank") or workspace.BossFolder:FindFirstChild("King Slime") or workspace.BossFolder:FindFirstChild("Dark Ghost") or workspace.BossFolder:FindFirstChild("Demon Overlord") or workspace.BossFolder:FindFirstChild("Dragon Beast") or workspace.BossFolder:FindFirstChild("Alien Leader") then
+	   return "Boss"
+	else
+	   return "Zombie"
+	end
 end
 
 function getEquippedWeapon(player)
@@ -76,10 +84,6 @@ end
 end
 end
 --]]
-local Statslist = T7:AddConsole({
-    ["y"] = 50,
-    ["source"] = "",
-})
 
 local zombieConsole = T1:AddConsole({
     ["y"] = 50,
@@ -202,14 +206,6 @@ end
 end
 end)
 
-T1:AddSwitch("Instant Kill (equip gun)", function(bool)
-_G.RepeatKill = bool
-while wait() do
-if _G.RepeatKill == false then break end
-KillZombies()
-end
-end)
-
 --[[local args = {
     [1] = {
         ["Normal"] = Vector3.new(-0.4952230751514435, -0.25188109278678894, -0.8314506411552429),
@@ -229,6 +225,16 @@ gmt.__namecall = newcclosure(function(self, ...)
                 local Args = {...}
                 local method = getnamecallmethod()
                 if tostring(self) == "Gun" and tostring(method) == "FireServer" then
+		if BossList() == "Boss" then
+		for _,v in pairs(workspace.BossFolder:GetChildren()) do
+                      Args[1]["Normal"] = Vector3.new(0,0,0)
+                      Args[1]["Direction"] = v.Torso.Position
+                      Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
+                      Args[1]["Hit"] = v.Torso
+                      Args[1]["Origin"] = v.Torso.Position
+                      Args[1]["Pos"] = v.Torso.Position
+		end
+		elseif BossList() == "Zombie" then
 		for _,v in pairs(workspace.enemies:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = v.Torso.Position
@@ -236,6 +242,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                       Args[1]["Hit"] = v.Torso
                       Args[1]["Origin"] = v.Torso.Position
                       Args[1]["Pos"] = v.Torso.Position
+		end
 		end
                     return self.FireServer(self, unpack(Args))
                 end
@@ -440,4 +447,14 @@ T3:AddButton("Anti-Lag", function()
 end	
 end)		
 
-Statslist:Set("Kills: ? \nLevels: ? \nMoney: ?")
+T7:AddSwitch("Auto Collect power up", function(State)
+_G._BringShit = State
+	while wait() do
+	     if _G._BringShit == false then break end
+	   for _,v in pairs(workspace.Powerup:GetChildren()) do
+                if v.Name:find("grenade") or v.Name:find("invincibility") or v.Name:find("molotov") or v.Name:find("speedboost") or v.Name:find("stungrenade") then
+			workspace.Powerup[v.Name].CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+		end
+	    end
+	end
+end)
