@@ -14,8 +14,11 @@ local T2 = Window:AddTab("Tool")
 local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
 local T6 = Window:AddTab("Player")
-local T7 = Window:AddTab("Misc")
+local T7 = Window:AddTab("Powerup")
 local workspace = game:GetService("Workspace")
+local playerpos = 0
+local zombiepos = 0
+local bosspos = 0
 
 function bossCheck()
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
@@ -37,6 +40,22 @@ function BossList()
 	else
 	   return "Zombie"
 	end
+end
+
+function ZombieDistance()
+	playerpos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+	for _,v in pairs(workspace.enemies:GetChildren()) do
+	    zombiepos = v.HumanoidRootPart.Position
+	    return (playerpos - zombiepos).Magnitude
+    end
+end
+
+function BossDistance()
+	playerpos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+	for _,v in pairs(workspace.BossFolder:GetChildren()) do
+	    bosspos = v.HumanoidRootPart.Position
+	    return (playerpos - bosspos).Magnitude
+    end
 end
 
 function getEquippedWeapon(player)
@@ -225,7 +244,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                 local Args = {...}
                 local method = getnamecallmethod()
                 if tostring(self) == "Gun" and tostring(method) == "FireServer" then
-		if BossList() == "Boss" then
+		if BossList() == "Boss" and BossDistance() < 100 then
 		for _,v in pairs(workspace.BossFolder:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = v.Torso.Position
@@ -234,7 +253,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                       Args[1]["Origin"] = v.Torso.Position
                       Args[1]["Pos"] = v.Torso.Position
 		end
-		elseif BossList() == "Zombie" then
+		elseif BossList() == "Zombie" and ZombieDistance() < 100 then
 		for _,v in pairs(workspace.enemies:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = v.Torso.Position
