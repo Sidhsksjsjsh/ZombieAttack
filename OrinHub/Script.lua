@@ -66,7 +66,7 @@ function getEquippedWeapon(player)
     end
 
 function KillZombies()
-if isBoss() then
+if BossList() == "Boss" then
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
 local args = {
     [1] = {
@@ -81,7 +81,7 @@ local args = {
 
 game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
 end
-else
+elseif BossList() == "Zombie" then
 for _,v in pairs(workspace.enemies:GetChildren()) do
 local args = {
     [1] = {
@@ -461,6 +461,48 @@ T3:AddButton("Anti-Lag", function()
     end
 end	
 end)		
+
+if game.Players.LocalPlayer.Name == "Rivanda_Cheater" then
+T5:AddSwitch("Auto Kill zombie (Test)", function(bool)
+_G._UserKill = bool
+	while wait() do
+	if _G._UserKill == false then break end
+		KillZombies()
+	end
+end)
+
+T5:AddSwitch("Auto Shoot (Test) (non-ReplicatedStorage) (FireServer)", function(bool)
+_G._UserGun = bool
+	while wait() do
+	if _G._UserGun == false then break end
+		game.Players.LocalPlayer.Character[getEquippedWeapon(game.Players.LocalPlayer)]:FireServer()
+	end
+end)
+
+T5:AddSwitch("Auto Shoot (Test) (non-ReplicatedStorage) (InvokeServer)", function(bool)
+_G._UserGun_2 = bool
+	while wait() do
+	if _G._UserGun_2 == false then break end
+		game.Players.LocalPlayer.Character[getEquippedWeapon(game.Players.LocalPlayer)]:InvokeServer()
+	end
+end)
+
+T5:AddSwitch("Auto Shoot (Test) (ReplicatedStorage) (FireServer)", function(bool)
+_G._ReplicatedGun = bool
+	while wait() do
+	if _G._ReplicatedGun == false then break end
+		game:GetService("ReplicatedStorage").Guns[getEquippedWeapon(game.Players.LocalPlayer)]:FireServer()
+	end
+end)
+
+T5:AddSwitch("Auto Shoot (Test) (ReplicatedStorage) (InvokeServer)", function(bool)
+_G._ReplicatedGun_2 = bool
+	while wait() do
+	if _G._ReplicatedGun_2 == false then break end
+		game:GetService("ReplicatedStorage").Guns[getEquippedWeapon(game.Players.LocalPlayer)]:InvokeServer()
+	end
+end)
+end
 
 T7:AddSwitch("Auto Collect power up", function(State)
 _G._BringShit = State
