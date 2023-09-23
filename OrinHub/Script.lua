@@ -650,7 +650,7 @@ end)
 
 
 
-T4:AddButton("zombie esp", function()
+--[[T4:AddButton("zombie esp", function()
 local BillboardGui = Instance.new('BillboardGui') -- Makes Billboardgui
 local TextLabel = Instance.new('TextLabel',BillboardGui)
 
@@ -671,7 +671,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 		end
 	end
 end)
-end)
+end)]]
 
 T4:AddSwitch("Zombie ESP V2", function(bool)
 on = bool
