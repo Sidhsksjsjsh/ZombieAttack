@@ -65,17 +65,18 @@ function getEquippedWeapon(player)
         end
     end
 
-function KillZombies()
+function KillZombies(weapontype,partaim)
+if weapontype == "gun" then
 if BossList() == "Boss" then
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
 local args = {
     [1] = {
         ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = v.Head.Position,
+        ["Direction"] = v[partaim].Position,
         ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
-        ["Hit"] = v.Head,
-        ["Origin"] = v.Head.Position,
-        ["Pos"] = v.Head.Position
+        ["Hit"] = v[partaim],
+        ["Origin"] = v[partaim].Position,
+        ["Pos"] = v[partaim].Position
     }
 }
 
@@ -86,16 +87,30 @@ for _,v in pairs(workspace.enemies:GetChildren()) do
 local args = {
     [1] = {
         ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = v.Head.Position,
+        ["Direction"] = v[partaim].Position,
         ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
-        ["Hit"] = v.Head,
-        ["Origin"] = v.Head.Position,
-        ["Pos"] = v.Head.Position
+        ["Hit"] = v[partaim],
+        ["Origin"] = v[partaim].Position,
+        ["Pos"] = v[partaim].Position
     }
 }
 
 game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
 end
+end
+elseif weapontype == "melee" then
+if BossList() == "Boss" then
+for _,v in pairs(workspace.BossFolder:GetChildren()) do
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),v[partaim])
+end
+elseif BossList() == "Zombie" then
+for _,v in pairs(workspace.enemies:GetChildren()) do
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),v[partaim])
+end
+end
+--end
+else
+	return "INVALID WEAPON TYPE"
 end
 end
 --]]
@@ -104,6 +119,18 @@ local zombieConsole = T1:AddConsole({
     ["y"] = 50,
     ["source"] = "",
 })
+
+local PartKill = T1:AddDropdown("Select body type", function(prtaim)
+_G._ZombieKillPart = prtaim
+end)
+
+PartKill:Add("HumanoidRootPart")
+PartKill:Add("Head")
+PartKill:Add("Torso")
+PartKill:Add("Left Leg")
+PartKill:Add("Right Arm")
+PartKill:Add("Left Arm")
+PartKill:Add("Right Leg")
 
 zombieConsole:Set('You are not a zombie!')
 
@@ -166,12 +193,12 @@ end)
 while wait() do
 if(_G.farm2==true and _G.globalTarget~=nil and _G.globalTarget:FindFirstChild("Head") and Player.Character:FindFirstChildOfClass("Tool"))then
 local target = _G.globalTarget
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = target.Head.Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = target.Head, ["Origin"] = target.Head.Position, ["Pos"] = target.Head.Position,})
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = target[_G._ZombieKillPart].Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = target[_G._ZombieKillPart], ["Origin"] = target[_G._ZombieKillPart].Position, ["Pos"] = target[_G._ZombieKillPart].Position,})
 wait()
 end
 end
 end)
-
+--[[
 T1:AddSwitch("aimbot", function(bool)
 	local groundDistance = 8
 local Player = game:GetService("Players").LocalPlayer
@@ -232,7 +259,7 @@ end)
     }
 }]]
 --v.Head.Position
-T1:AddButton("Bullet tracker [Gun] [One click] [Damage only]", function()
+T1:AddButton("Bullet tracker [Damage only]", function()
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
@@ -243,20 +270,20 @@ gmt.__namecall = newcclosure(function(self, ...)
 		if BossList() == "Boss" then
 		for _,v in pairs(workspace.BossFolder:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
-                      Args[1]["Direction"] = v.Torso.Position
+                      Args[1]["Direction"] = v[_G._ZombieKillPart].Position
                       Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
-                      Args[1]["Hit"] = v.Torso
-                      Args[1]["Origin"] = v.Torso.Position
-                      Args[1]["Pos"] = v.Torso.Position
+                      Args[1]["Hit"] = v[_G._ZombieKillPart]
+                      Args[1]["Origin"] = v[_G._ZombieKillPart].Position
+                      Args[1]["Pos"] = v[_G._ZombieKillPart].Position
 		end
 		elseif BossList() == "Zombie" then
 		for _,v in pairs(workspace.enemies:GetChildren()) do
                       Args[1]["Normal"] = Vector3.new(0,0,0)
-                      Args[1]["Direction"] = v.Torso.Position
+                      Args[1]["Direction"] = v[_G._ZombieKillPart].Position
                       Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
-                      Args[1]["Hit"] = v.Torso
-                      Args[1]["Origin"] = v.Torso.Position
-                      Args[1]["Pos"] = v.Torso.Position
+                      Args[1]["Hit"] = v[_G._ZombieKillPart]
+                      Args[1]["Origin"] = v[_G._ZombieKillPart].Position
+                      Args[1]["Pos"] = v[_G._ZombieKillPart].Position
 		end
 		end
                     return self.FireServer(self, unpack(Args))
@@ -264,7 +291,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                 return oldNamecall(self, ...)
             end)
 end)
-
+--[[
 T1:AddButton("Knife tracker [Throw and Hit] [One click] [Damage only]", function()
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
@@ -282,7 +309,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                 return oldNamecall(self, ...)
             end)
 end)
-
+]]
 T1:AddSwitch("kill platform", function(bool)
 local plr = game:service('Players').LocalPlayer
 local char = plr.Character
@@ -372,7 +399,7 @@ T5:AddButton("Gravity", function()
 game.Workspace.Gravity = 3
 end)
 
-T1:AddSwitch("wallbang V1", function(State)
+T1:AddSwitch("wallbang V1 [Patched]", function(State)
 getgenv().WALLBANG = State
 local OldNameCall = nil
 OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
@@ -384,7 +411,7 @@ OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
 end) 
 end)
 
-T1:AddSwitch("wallbang V2", function(State)
+T1:AddSwitch("wallbang V2 [Patched]", function(State)
 getgenv().Wallbang = State
 
 -- normal patched wallbang
@@ -411,7 +438,7 @@ Instance.new('Humanoid', game.Players.LocalPlayer.Character)
 game:GetService("Workspace")[game.Players.LocalPlayer.Name]:FindFirstChildOfClass(
 'Humanoid').HipHeight = 2
 end)
-
+--[[
 T1:AddButton("Bullet track V2", function()
 local oPlBfNRNfyJz = game.Players.LocalPlayer;local ZtYjkXDgMlxc = "Head";local dAociCiEvJMB = function()local QInaUnazu = math.huge;local J8IhabzuN = nil;for iUIhaztYUbnZ,uUhsabzyuG in next, game.Workspace:GetDescendants() do if uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc) and oPlBfNRNfyJz.Character:FindFirstChild(ZtYjkXDgMlxc) and not uUhsabzyuG:FindFirstChild('Guns') and uUhsabzyuG.Parent.Name ~= "deadenemies" then local IIhzabUtd = (uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc).Position-oPlBfNRNfyJz.Character.Head.Position).magnitude;if IIhzabUtd < QInaUnazu then QInaUnazu = IIhzabUtd;J8IhabzuN = uUhsabzyuG;end;end;end;return J8IhabzuN;end;local GtsZsUbJOuJk = oPlBfNRNfyJz:GetMouse();local tZcInsImQQfX = getrawmetatable(game);local sCtxkbklLnmy = tZcInsImQQfX.__index;setreadonly(tZcInsImQQfX,false);tZcInsImQQfX.__index = newcclosure(function(hFcjBtZBXthW,tGNxqMIMabVS)if hFcjBtZBXthW == GtsZsUbJOuJk and tostring(tGNxqMIMabVS) == "Hit" then return dAociCiEvJMB():FindFirstChild(ZtYjkXDgMlxc).CFrame;end;return sCtxkbklLnmy(hFcjBtZBXthW,tGNxqMIMabVS)end)setreadonly(tZcInsImQQfX,true)
 end)
@@ -433,7 +460,7 @@ end
   end
 end
 end)
-
+]]
 T6:AddTextBox("speed", function(e)
 game.Players.LocalPlayer.Character.Humanoid.WalkSpeed=e 
 end)
@@ -462,47 +489,21 @@ T3:AddButton("Anti-Lag", function()
 end	
 end)		
 
-if game.Players.LocalPlayer.Name == "Rivanda_Cheater" then
-T5:AddSwitch("Auto Kill zombie (Test)", function(bool)
+T1:AddSwitch("Auto Kill zombie [Gun]", function(bool)
 _G._UserKill = bool
 	while wait() do
 	if _G._UserKill == false then break end
-		KillZombies()
+		KillZombies("gun",_G._ZombieKillPart)
 	end
 end)
 
-T5:AddSwitch("Auto Shoot (Test) (non-ReplicatedStorage) (FireServer)", function(bool)
-_G._UserGun = bool
+T1:AddSwitch("Auto Kill zombie [Knive]", function(bool)
+_G._UserMelee = bool
 	while wait() do
-	if _G._UserGun == false then break end
-		game.Players.LocalPlayer.Character[getEquippedWeapon(game.Players.LocalPlayer)]:FireServer()
+	if _G._UserMelee == false then break end
+		KillZombies("melee",_G._ZombieKillPart)
 	end
 end)
-
-T5:AddSwitch("Auto Shoot (Test) (non-ReplicatedStorage) (InvokeServer)", function(bool)
-_G._UserGun_2 = bool
-	while wait() do
-	if _G._UserGun_2 == false then break end
-		game.Players.LocalPlayer.Character[getEquippedWeapon(game.Players.LocalPlayer)]:InvokeServer()
-	end
-end)
-
-T5:AddSwitch("Auto Shoot (Test) (ReplicatedStorage) (FireServer)", function(bool)
-_G._ReplicatedGun = bool
-	while wait() do
-	if _G._ReplicatedGun == false then break end
-		game:GetService("ReplicatedStorage").Guns[getEquippedWeapon(game.Players.LocalPlayer)]:FireServer()
-	end
-end)
-
-T5:AddSwitch("Auto Shoot (Test) (ReplicatedStorage) (InvokeServer)", function(bool)
-_G._ReplicatedGun_2 = bool
-	while wait() do
-	if _G._ReplicatedGun_2 == false then break end
-		game:GetService("ReplicatedStorage").Guns[getEquippedWeapon(game.Players.LocalPlayer)]:InvokeServer()
-	end
-end)
-end
 
 T7:AddSwitch("Auto Collect power up", function(State)
 _G._BringShit = State
