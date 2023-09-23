@@ -19,6 +19,7 @@ local workspace = game:GetService("Workspace")
 local playerpos = 0
 local zombiepos = 0
 local bosspos = 0
+local player = game.Players.LocalPlayer
 
 --// Made by Blissful#4992
 --// Locals:
@@ -80,7 +81,7 @@ for i, v in pairs(workspace.enemies:GetChildren()) do
     local function ESP()
         local connection
         connection = game:GetService("RunService").RenderStepped:Connect(function()
-            if on and v.HumanoidRootPart ~= nil and v:FindFirstChild("Humanoid") ~= nil or v:FindFirstChild("HumanoidRootPart") ~= nil and v:FindFirstChild("Head") ~= nil then
+            if on and v.HumanoidRootPart ~= nil and v:FindFirstChild("Humanoid") ~= nil or v:FindFirstChild("HumanoidRootPart") ~= nil and v:FindFirstChild("Head") ~= nil and v.Parent == workspace.enemies then
                 local pos, vis = camera:WorldToViewportPoint(v.HumanoidRootPart.Position)
                 if vis then
                     local Scale = v.Head.Size.Y/2
@@ -175,7 +176,7 @@ for i, v in pairs(workspace.enemies:GetChildren()) do
                 for u, x in pairs(lines) do
                     x.Visible = false
                 end
-                if v.Name:FindFirstChild(v.Name) == nil then
+                if v:FindFirstChild(v.Name) == nil then
                     connection:Disconnect()
                 end
             end
@@ -303,7 +304,7 @@ local function forZombie(newplr)
                 for u, x in pairs(lines) do
                     x.Visible = false
                 end
-                if newplr.Name:FindFirstChild(newplr.Name) == nil then
+                if newplr:FindFirstChild(newplr.Name) == nil then
                     connection:Disconnect()
                 end
             end
