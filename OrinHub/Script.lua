@@ -72,6 +72,20 @@ else
 end
 end
 
+function getMap()
+for _,v in pairs(workspace["map"]:GetChildren()) do
+	return v.Name
+end
+end
+
+function uppercase(context)
+	context:upper()
+end
+
+function lowercase(context)
+	context:lower()
+end
+
 function BossList()
 	if workspace.BossFolder:FindFirstChild("Mega Tank") or workspace.BossFolder:FindFirstChild("King Slime") or workspace.BossFolder:FindFirstChild("Dark Ghost") or workspace.BossFolder:FindFirstChild("Demon Overlord") or workspace.BossFolder:FindFirstChild("Dragon Beast") or workspace.BossFolder:FindFirstChild("Alien Leader") then
 	   return "Boss"
@@ -179,12 +193,12 @@ return nearest
 end
 
 local globalTarget = nil
-game:GetService("RunService").RenderStepped:Connect(function()
-local target = getNearest()
+--game:GetService("RunService").RenderStepped:Connect(function()
+--local target = getNearest()
 --game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, target.Head.Position)
 --Player.Character.HumanoidRootPart.CFrame = (target.HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
-globalTarget = target
-end)
+--globalTarget = target
+--end)
 
 local zombieConsole = T1:AddConsole({
     ["y"] = 50,
@@ -203,7 +217,7 @@ PartKill:Add("Right Arm")
 PartKill:Add("Left Arm")
 PartKill:Add("Right Leg")
 
-zombieConsole:Set('You are not a zombie!')
+zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 
 T2:AddButton("Get all Knives", function()
 for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
@@ -226,10 +240,10 @@ _G.farm2 = bool
 
 while wait() do
 if _G.farm2 == false then break end
-local target = globalTarget
-game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, target.Head.Position)
-Player.Character.HumanoidRootPart.CFrame = (target.HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = target[_G._ZombieKillPart].Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = target[_G._ZombieKillPart], ["Origin"] = target[_G._ZombieKillPart].Position, ["Pos"] = target[_G._ZombieKillPart].Position,})
+--local target = globalTarget
+game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
+Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
 end
 end)
 --[[
@@ -355,15 +369,7 @@ platform.Size = Vector3.new(100,0,100)
 platform.Anchored = true
 platform.Position = Vector3.new(555,555,555)
 root.CFrame = platform.CFrame * CFrame.new(0,4,0)
- 
-if workspace:FindFirstChild(plr) then
-   zombieConsole:Set('You are not a zombie!')
-else
-   zombieConsole:Set('You are a zombie!')
-end
- 
-wait(.5)
- 
+   
 if not _G.iszombie then
    for _, a in pairs(workspace.enemies:children()) do
        for _, b in pairs(a:children()) do
@@ -478,8 +484,7 @@ end)
 T1:AddButton("Immortal", function()
 game.Players.LocalPlayer.Character.Humanoid:Remove()
 Instance.new('Humanoid', game.Players.LocalPlayer.Character)
-game:GetService("Workspace")[game.Players.LocalPlayer.Name]:FindFirstChildOfClass(
-'Humanoid').HipHeight = 2
+game:GetService("Workspace")[game.Players.LocalPlayer.Name]:FindFirstChildOfClass('Humanoid').HipHeight = 2
 end)
 --[[
 T1:AddButton("Bullet track V2", function()
@@ -631,3 +636,11 @@ _G._BringShit = State
 	    end
 	end
 end)
+
+while wait() do
+if workspace:FindFirstChild(Player) then
+   zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+else
+   zombieConsole:Set('You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+end
+end
