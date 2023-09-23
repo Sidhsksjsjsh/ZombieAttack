@@ -306,7 +306,7 @@ end)
         ["Pos"] = Vector3.new(-65.88217163085938, 3.6095950603485107, -122.7344741821289)
     }
 }]]
---v.Head.Position
+--[[v.Head.Position
 T1:AddButton("Bullet tracker [Damage only]", function()
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
@@ -335,6 +335,26 @@ gmt.__namecall = newcclosure(function(self, ...)
 		end
 		end
                     return self.FireServer(self, unpack(Args))
+                end
+                return oldNamecall(self, ...)
+            end)
+end)
+]]
+T1:AddButton("Bullet tracker [Damage only]", function()
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+gmt.__namecall = newcclosure(function(self, ...)
+                local Args = {...}
+                local method = getnamecallmethod()
+                if tostring(self) == "Gun" and tostring(method) == "FireServer" then
+		      Args[1]["Normal"] = Vector3.new(0,0,0)
+                      Args[1]["Direction"] = getNearest()[_G._ZombieKillPart].Position
+                      Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
+                      Args[1]["Hit"] = getNearest()[_G._ZombieKillPart]
+                      Args[1]["Origin"] = getNearest()[_G._ZombieKillPart].Position
+                      Args[1]["Pos"] = getNearest()[_G._ZombieKillPart].Position
+		    return self.FireServer(self, unpack(Args))
                 end
                 return oldNamecall(self, ...)
             end)
