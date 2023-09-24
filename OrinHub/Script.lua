@@ -24,7 +24,7 @@ local Window = library:AddWindow("Orin - Cheat",
     })
     
 local T1 = Window:AddTab("Farm")
-local T4 = Window:AddTab("esp")
+local T4 = Window:AddTab("sabotage")
 local T2 = Window:AddTab("Tool")
 local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
@@ -198,7 +198,7 @@ local args = {
     [1] = {
         ["Normal"] = Vector3.new(0,0,0),
         ["Direction"] = getNearest()[partaim].Position,
-        ["Name"] = SaveToolName,
+        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
         ["Hit"] = getNearest()[partaim],
         ["Origin"] = getNearest()[partaim].Position,
         ["Pos"] = getNearest()[partaim].Position
@@ -207,7 +207,7 @@ local args = {
 
 game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
 elseif weapontype == "melee" then
-game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",SaveToolName,getNearest()[partaim])
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
 else
 	return "INVALID WEAPON TYPE"
 end
@@ -502,12 +502,51 @@ end
 --#
 end
 
-T4:AddSwitch("Zombie ESP V2 [Disabled again]", function(bool)
---_G._VirtualBodyColor = bool
---	while wait() do
---	if _G._VirtualBodyColor == false then break end
---	
- --       end -- then
+--game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
+
+T4:AddTextBox("Coord X (normal : 0)",function(e)
+   _G._X = e or 0
+end)
+
+T4:AddTextBox("Coord Y (normal: 8)",function(e)
+   _G._Y = e or 8
+end)
+
+T4:AddTextBox("Coord Z (normal: 9)",function(e)
+   _G._Z = e or 9
+end)
+
+T4:AddSwitch("Click to kill", function(bool)
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+gmt.__namecall = newcclosure(function(self, ...)
+                local Args = {...}
+                local method = getnamecallmethod()
+                if tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and Args[1] == "hit" then
+		      Args[2] = getEquippedWeapon(game.Players.LocalPlayer)
+		      Args[3] = getNearest()["Head"]
+		      Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(_G._X,_G._Y,_G._Z))
+		return self.InvokeServer(self, unpack(Args))
+                end
+                return oldNamecall(self, ...)
+            end)
+end)
+
+T4:AddSwitch("Silent Throw", function(bool)
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+gmt.__namecall = newcclosure(function(self, ...)
+                local Args = {...}
+                local method = getnamecallmethod()
+                if tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and Args[1] == "throw" then
+		      Args[2] = getEquippedWeapon(game.Players.LocalPlayer)
+		      Args[3] = CFrame.new(getNearest()["Head"].Position)
+		return self.InvokeServer(self, unpack(Args))
+                end
+                return oldNamecall(self, ...)
+            end)
 end)
 
 T5:AddButton("Infinite Jump", function()
@@ -651,14 +690,6 @@ _G._UserKill = bool
 	while wait() do
 	if _G._UserKill == false then break end
 		KillZombies("gun",_G._ZombieKillPart)
-	end
-end)
-
-T1:AddSwitch("Auto Kill zombie [Knive]", function(bool)
-_G._UserMelee = bool
-	while wait() do
-	if _G._UserMelee == false then break end
-		KillZombies("melee",_G._ZombieKillPart)
 	end
 end)
 
