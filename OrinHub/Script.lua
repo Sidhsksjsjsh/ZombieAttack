@@ -1,3 +1,18 @@
+local SaveToolName = ""
+local mt = getrawmetatable(game);
+setreadonly(mt,false)
+local namecall = mt.__namecall
+
+mt.__namecall = newcclosure(function(self, ...)
+	local Method = getnamecallmethod()
+	local Args = {...}
+
+	if Method == 'FireServer' and self.Name == 'Gun' then
+        SaveToolName = Args[1]["Name"]
+end
+	return namecall(self, ...) 
+end)
+
 local library = loadstring(game:HttpGet("https://pastebin.com/raw/Uub92rmN"))()
 
 
@@ -182,7 +197,7 @@ local args = {
     [1] = {
         ["Normal"] = Vector3.new(0,0,0),
         ["Direction"] = getNearest()[partaim].Position,
-        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
+        ["Name"] = SaveToolName,
         ["Hit"] = getNearest()[partaim],
         ["Origin"] = getNearest()[partaim].Position,
         ["Pos"] = getNearest()[partaim].Position
@@ -191,7 +206,7 @@ local args = {
 
 game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
 elseif weapontype == "melee" then
-game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",SaveToolName,getNearest()[partaim])
 else
 	return "INVALID WEAPON TYPE"
 end
