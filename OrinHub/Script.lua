@@ -163,20 +163,20 @@ game.Players.PlayerAdded:Connect(function(plr)
 end)]]
 
 virtualxray.Enemy = function(body)
-if not body:FindFirstChild("Virtual Body Color") then
-    local esp = Instance.new("Highlight")
-    esp.Name = "Virtual Body Color"
-    esp.FillTransparency = 0
-    esp.FillColor = Color3.new(1, 0.666667, 0)
-    esp.OutlineColor = Color3.new(1, 0.333333, 1)
-    esp.OutlineTransparency = 0
-    esp.Parent = body
+if not body:FindFirstChild("Genta") then
+ local esp = Instance.new("Highlight")
+ esp.Name = "Genta"
+ esp.FillTransparency = 0
+ esp.FillColor = Color3.new(1, 0.666667, 0)
+ esp.OutlineColor = Color3.new(1, 0.333333, 1)
+ esp.OutlineTransparency = 0
+ esp.Parent = body
 end
 end
 
 virtualxray.killesp = function(body)
-if body:FindFirstChild("Virtual Body Color") then
-	body:FindFirstChild("Virtual Body Color"):Destroy()
+if body:FindFirstChild("Genta") then
+	body:FindFirstChild("Genta"):Destroy()
 end
 end
 
@@ -248,17 +248,9 @@ PartKill:Add("Right Leg")
 
 console.log('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 
-local EspProtocol = T4:AddDropdown("Select body type", function(prtaim)
-_G._ZombieESPPart = prtaim
-end)
-
-EspProtocol:Add("HumanoidRootPart")
-EspProtocol:Add("Head")
-EspProtocol:Add("Torso")
-EspProtocol:Add("Left Leg")
-EspProtocol:Add("Right Arm")
-EspProtocol:Add("Left Arm")
-EspProtocol:Add("Right Leg")
+--local EspProtocol = T4:AddDropdown("Select body type", function(prtaim)
+--_G._ZombieESPPart = prtaim
+--end)
 
 T2:AddButton("Get all Knives", function()
 for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
@@ -479,14 +471,40 @@ game:GetService("RunService").RenderStepped:Connect(function()
 	end
 end)
 end)]]
-
+--[[
+EspProtocol:Add("HumanoidRootPart")
+EspProtocol:Add("Head")
+EspProtocol:Add("Torso")
+EspProtocol:Add("Left Leg")
+EspProtocol:Add("Right Arm")
+EspProtocol:Add("Left Arm")
+EspProtocol:Add("Right Leg")
+]]
 T4:AddSwitch("Zombie ESP V2", function(bool)
 _G._VirtualBodyColor = bool
 	while wait() do
-	--if _G._VirtualBodyColor == false then break end
-	if _G._VirtualBodyColor == false then virtualxray.killesp(getNearest()[_G._ZombieESPPart]) end
-		virtualxray.Enemy(getNearest()[_G._ZombieESPPart])
+	if _G._VirtualBodyColor == false then break end
+	if BossList() == "Boss" then
+	for _,v in pairs(workspace.BossFolder:GetChildren()) do
+		virtualxray.Enemy(v["Head"])
+                virtualxray.Enemy(v["Torso"])
+		virtualxray.Enemy(v["Right Arm"])
+		virtualxray.Enemy(v["Left Arm"])
+		virtualxray.Enemy(v["Right Leg"])
+		virtualxray.Enemy(v["Left Leg"])
 	end
+	elseif BossList() == "Zombie" then
+	for _,v in pairs(workspace.enemies:GetChildren()) do
+		virtualxray.Enemy(v["Head"])
+                virtualxray.Enemy(v["Torso"])
+		virtualxray.Enemy(v["Right Arm"])
+		virtualxray.Enemy(v["Left Arm"])
+		virtualxray.Enemy(v["Right Leg"])
+		virtualxray.Enemy(v["Left Leg"])
+	end
+	end -- function
+	end -- do
+        end -- then
 end)
 
 T5:AddButton("Infinite Jump", function()
