@@ -37,6 +37,7 @@ local bosspos = 0
 local Player = game.Players.LocalPlayer
 local console = {}
 local virtualxray = {}
+local RunService = game:GetService("RunService")
 
 --// Made by Blissful#4992
 --// Locals:
@@ -482,34 +483,31 @@ EspProtocol:Add("Right Leg")
 ]]
 
 function BodyColor()
-if BossList() == "Boss" then
-	for _,v in pairs(workspace.BossFolder:GetChildren()) do
-		virtualxray.Enemy(v["Head"])
-                virtualxray.Enemy(v["Torso"])
-		virtualxray.Enemy(v["Right Arm"])
-		virtualxray.Enemy(v["Left Arm"])
-		virtualxray.Enemy(v["Right Leg"])
-		virtualxray.Enemy(v["Left Leg"])
-	end
-	elseif BossList() == "Zombie" then
-	for _,v in pairs(workspace.enemies:GetChildren()) do
-		virtualxray.Enemy(v["Head"])
-                virtualxray.Enemy(v["Torso"])
-		virtualxray.Enemy(v["Right Arm"])
-		virtualxray.Enemy(v["Left Arm"])
-		virtualxray.Enemy(v["Right Leg"])
-		virtualxray.Enemy(v["Left Leg"])
-	end
-	end
+for _,v in pairs(workspace.BossFolder:GetChildren()) do
+	virtualxray.Enemy(v["Head"])
+        virtualxray.Enemy(v["Torso"])
+	virtualxray.Enemy(v["Right Arm"])
+	virtualxray.Enemy(v["Left Arm"])
+	virtualxray.Enemy(v["Right Leg"])
+	virtualxray.Enemy(v["Left Leg"])
+end
+for _,v in pairs(workspace.enemies:GetChildren()) do
+	virtualxray.Enemy(v["Head"])
+        virtualxray.Enemy(v["Torso"])
+	virtualxray.Enemy(v["Right Arm"])
+	virtualxray.Enemy(v["Left Arm"])
+	virtualxray.Enemy(v["Right Leg"])
+	virtualxray.Enemy(v["Left Leg"])
+end
 --#
 end
 
-T4:AddSwitch("Zombie ESP V2", function(bool)
-_G._VirtualBodyColor = bool
-	while wait() do
-	if _G._VirtualBodyColor == false then break end
-	BodyColor()
-        end -- then
+T4:AddSwitch("Zombie ESP V2 [Disabled again]", function(bool)
+--_G._VirtualBodyColor = bool
+--	while wait() do
+--	if _G._VirtualBodyColor == false then break end
+--	
+ --       end -- then
 end)
 
 T5:AddButton("Infinite Jump", function()
@@ -748,10 +746,14 @@ _G._BringShit = State
 	end
 end)
 
-while wait() do
+RunService.RenderStepped:Connect(function()
 if workspace:FindFirstChild(Player.Name) then
    console.log('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 else
    console.log('You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 end
-end
+end)
+
+RunService.RenderStepped:Connect(function()
+BodyColor()
+end)
