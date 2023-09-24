@@ -480,11 +480,9 @@ EspProtocol:Add("Right Arm")
 EspProtocol:Add("Left Arm")
 EspProtocol:Add("Right Leg")
 ]]
-T4:AddSwitch("Zombie ESP V2", function(bool)
-_G._VirtualBodyColor = bool
-	while wait() do
-	if _G._VirtualBodyColor == false then break end
-	if BossList() == "Boss" then
+
+function BodyColor()
+if BossList() == "Boss" then
 	for _,v in pairs(workspace.BossFolder:GetChildren()) do
 		virtualxray.Enemy(v["Head"])
                 virtualxray.Enemy(v["Torso"])
@@ -502,8 +500,15 @@ _G._VirtualBodyColor = bool
 		virtualxray.Enemy(v["Right Leg"])
 		virtualxray.Enemy(v["Left Leg"])
 	end
-	end -- function
-	end -- do
+	end
+--#
+end
+
+T4:AddSwitch("Zombie ESP V2", function(bool)
+_G._VirtualBodyColor = bool
+	while wait() do
+	if _G._VirtualBodyColor == false then break end
+	BodyColor()
         end -- then
 end)
 
