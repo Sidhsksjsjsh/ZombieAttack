@@ -24,7 +24,7 @@ local Window = library:AddWindow("Orin - Cheat",
     })
     
 local T1 = Window:AddTab("Farm")
-local T4 = Window:AddTab("sabotage")
+local T4 = Window:AddTab("Crates")
 local T2 = Window:AddTab("Tool")
 local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
@@ -249,9 +249,16 @@ PartKill:Add("Right Leg")
 
 console.log('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 
---local EspProtocol = T4:AddDropdown("Select body type", function(prtaim)
---_G._ZombieESPPart = prtaim
---end)
+local cratesList = T4:AddDropdown("Select body type", function(list)
+_G._CratesList = list
+end)
+
+cratesList:Add("Basic #1")
+cratesList:Add("Basic #2")
+cratesList:Add("Basic #3")
+cratesList:Add("Uncommon")
+cratesList:Add("Rare")
+cratesList:Add("Legendary")
 
 T2:AddButton("Get all Knives", function()
 for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
@@ -504,56 +511,23 @@ end
 
 --game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
 
-T4:AddTextBox("Coord X (normal : 0)",function(e)
-   _G._X = e or 0
+T4:AddSwitch("Auto Open Crate", function(bool)
+_G._openCrates = bool
+	while wait() do
+		if _G._openCrates == false then break end
+                   game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("unbox_box",_G._CratesList)
+	end
 end)
 
-T4:AddTextBox("Coord Y (normal: 8)",function(e)
-   _G._Y = e or 8
-end)
-
-T4:AddTextBox("Coord Z (normal: 9)",function(e)
-   _G._Z = e or 9
-end)
-
-T4:AddSwitch("Click to kill", function(bool)
-local gmt = getrawmetatable(game)
-setreadonly(gmt, false)
-local oldNamecall = gmt.__namecall
-gmt.__namecall = newcclosure(function(self, ...)
-                local Args = {...}
-                local method = getnamecallmethod()
-                if tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and Args[1] == "hit" then
-		      Args[2] = getEquippedWeapon(game.Players.LocalPlayer)
-		      Args[3] = getNearest()["Head"]
-		      Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(_G._X,_G._Y,_G._Z))
-		return self.InvokeServer(self, unpack(Args))
-                end
-                return oldNamecall(self, ...)
-            end)
-end)
-
-T4:AddSwitch("Silent Throw", function(bool)
-local gmt = getrawmetatable(game)
-setreadonly(gmt, false)
-local oldNamecall = gmt.__namecall
-gmt.__namecall = newcclosure(function(self, ...)
-                local Args = {...}
-                local method = getnamecallmethod()
-                if tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and Args[1] == "throw" then
-		      Args[2] = getEquippedWeapon(game.Players.LocalPlayer)
-		      Args[3] = CFrame.new(getNearest()["Head"].Position)
-		return self.InvokeServer(self, unpack(Args))
-                end
-                return oldNamecall(self, ...)
-            end)
+T4:AddButton("Open 1x", function()
+game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("unbox_box",_G._CratesList)
 end)
 
 T5:AddButton("Infinite Jump", function()
 local InfiniteJumpEnabled = true
 game:GetService("UserInputService").JumpRequest:connect(function()
 	if InfiniteJumpEnabled then
-		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+		game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
 	end
 end)
 end)
@@ -770,7 +744,7 @@ _G._BringShit = State
 	while wait() do
 	     if _G._BringShit == false then break end
 	   for _,v in pairs(game:GetService("Workspace").Powerups.Powerup:GetChildren()) do
-                if v.Name:find("grenade") or v.Name:find("godmode") or v.Name:find("molotov") or v.Name:find("speedboost") or v.Name:find("stungrenade") then
+                if v.Name:FindFirstChild("grenadePart") or v.Name:FindFirstChild("godmodePart") or v.Name:FindFirstChild("molotovPart") or v.Name:FindFirstChild("speedboostPart") or v.Name:FindFirstChild("stungrenadePart") then
 			game:GetService("Workspace").Powerups.Powerup[v.Name].CFrame = CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position)
 		end
 	    end
