@@ -36,7 +36,7 @@ local zombiepos = 0
 local bosspos = 0
 local Player = game.Players.LocalPlayer
 local console = {}
-local esp = {}
+local virtualxray = {}
 
 --// Made by Blissful#4992
 --// Locals:
@@ -162,7 +162,7 @@ game.Players.PlayerAdded:Connect(function(plr)
    end)
 end)]]
 
-esp.zombie = function(body)
+virtualxray.Enemy = function(body)
 if not body:FindFirstChild("Virtual Body Color") then
     local esp = Instance.new("Highlight")
     esp.Name = "Virtual Body Color"
@@ -174,7 +174,7 @@ if not body:FindFirstChild("Virtual Body Color") then
 end
 end
 
-esp.destroy = function(body)
+virtualxray.killesp = function(body)
 if body:FindFirstChild("Virtual Body Color") then
 	body:FindFirstChild("Virtual Body Color"):Destroy()
 end
@@ -484,8 +484,8 @@ T4:AddSwitch("Zombie ESP V2", function(bool)
 _G._VirtualBodyColor = bool
 	while wait() do
 	--if _G._VirtualBodyColor == false then break end
-	if _G._VirtualBodyColor == false then esp.destroy(getNearest()[_G._ZombieESPPart]) end
-		esp.zombie(getNearest()[_G._ZombieESPPart])
+	if _G._VirtualBodyColor == false then virtualxray.killesp(getNearest()[_G._ZombieESPPart]) end
+		virtualxray.Enemy(getNearest()[_G._ZombieESPPart])
 	end
 end)
 
