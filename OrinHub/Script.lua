@@ -20,6 +20,8 @@ local playerpos = 0
 local zombiepos = 0
 local bosspos = 0
 local Player = game.Players.LocalPlayer
+local console = {}
+local esp = {}
 
 --// Made by Blissful#4992
 --// Locals:
@@ -131,6 +133,38 @@ end
 return nearest
 end
 
+--local players = game.Players:GetPlayers()
+--[[
+game.Players.PlayerAdded:Connect(function(plr)
+   plr.CharacterAdded:Connect(function(chr)
+       local esp = Instance.new("Highlight")
+       esp.Name = plr.Name
+       esp.FillTransparency = 0
+       esp.FillColor = Color3.new(1, 0.666667, 0)
+       esp.OutlineColor = Color3.new(1, 0.333333, 1)
+       esp.OutlineTransparency = 0
+       esp.Parent = chr
+   end)
+end)]]
+
+esp._client.zombie = function(body)
+if not body:FindFirstChild("Virtual Body Color") then
+    local esp = Instance.new("Highlight")
+    esp.Name = "Virtual Body Color"
+    esp.FillTransparency = 0
+    esp.FillColor = Color3.new(1, 0.666667, 0)
+    esp.OutlineColor = Color3.new(1, 0.333333, 1)
+    esp.OutlineTransparency = 0
+    esp.Parent = body
+end
+end
+
+esp._client.destroy = function(body)
+if body:FindFirstChild("Virtual Body Color") then
+	body:FindFirstChild("Virtual Body Color"):Destroy()
+end
+end
+
 function getEquippedWeapon(player)
         local char = player.Character
         local weapon = char and char:FindFirstChildWhichIsA("Tool")
@@ -177,6 +211,14 @@ local zombieConsole = T1:AddConsole({
     ["source"] = "",
 })
 
+console.log = function(cont)
+    zombieConsole:Set(cont)
+end
+
+console.view = function(consoleParent)
+	return consoleParent:Get()
+end
+
 local PartKill = T1:AddDropdown("Select body type", function(prtaim)
 _G._ZombieKillPart = prtaim
 end)
@@ -189,7 +231,19 @@ PartKill:Add("Right Arm")
 PartKill:Add("Left Arm")
 PartKill:Add("Right Leg")
 
-zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+console.log('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+
+local EspProtocol = T4:AddDropdown("Select body type", function(prtaim)
+_G._ZombieESPPart = prtaim
+end)
+
+EspProtocol:Add("HumanoidRootPart")
+EspProtocol:Add("Head")
+EspProtocol:Add("Torso")
+EspProtocol:Add("Left Leg")
+EspProtocol:Add("Right Arm")
+EspProtocol:Add("Left Arm")
+EspProtocol:Add("Right Leg")
 
 T2:AddButton("Get all Knives", function()
 for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
@@ -411,20 +465,13 @@ game:GetService("RunService").RenderStepped:Connect(function()
 end)
 end)]]
 
-T4:AddSwitch("Zombie ESP V2 [Disabled]", function(bool)
-on = bool
-end)
-
-T4:AddSwitch("ESP Tracers", function(bool)
-Tracers = bool
-end)
-
-T4:AddSwitch("ESP Thickness", function(bool)
-Autothickness = bool
-end)
-
-T2:AddButton("Btools", function()
-loadstring(game:HttpGet("https://pastebin.com/raw/T0qaXjAR", true))()
+T4:AddSwitch("Zombie ESP V2", function(bool)
+_G._VirtualBodyColor = bool
+	while wait() do
+	--if _G._VirtualBodyColor == false then break end
+	if _G._VirtualBodyColor == false then esp._client.destroy(getNearest()[_G._ZombieESPPart]) end
+		esp._client.zombie(getNearest()[_G._ZombieESPPart])
+	end
 end)
 
 T5:AddButton("Infinite Jump", function()
@@ -657,7 +704,7 @@ _G._BringShit = State
 	     if _G._BringShit == false then break end
 	   for _,v in pairs(game:GetService("Workspace").Powerups.Powerup:GetChildren()) do
                 if v.Name:find("grenade") or v.Name:find("godmode") or v.Name:find("molotov") or v.Name:find("speedboost") or v.Name:find("stungrenade") then
-			game:GetService("Workspace").Powerups.Powerup[v.Name].CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+			game:GetService("Workspace").Powerups.Powerup[v.Name].CFrame = CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position)
 		end
 	    end
 	end
@@ -665,8 +712,8 @@ end)
 
 while wait() do
 if workspace:FindFirstChild(Player.Name) then
-   zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+   console.log('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 else
-   zombieConsole:Set('You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+   console.log('You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 end
 end
