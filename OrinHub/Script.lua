@@ -15,6 +15,7 @@ end)
 
 local library = loadstring(game:HttpGet("https://pastebin.com/raw/Uub92rmN"))()
 
+local Hint = Instance.new("Hint", workspace)
 
 local Window = library:AddWindow("Orin - Cheat",
     {
@@ -75,6 +76,28 @@ end
 --// Main Function:
 
 --workspace.ChildAdded:Connect(forZombie)
+function RayFromCamera()
+local ray = Ray.new(workspace.CurrentCamera.CFrame.p, workspace.CurrentCamera.CFrame.lookVector * 100)
+
+local ignoreList = {Player.Character} -- Daftar objek yang akan diabaikan saat raycasting
+
+local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+
+if hit then
+    return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: " .. tostring(hit.Normal) .. "\nObject found at position: \n" .. tostring(position)
+end
+end
+
+function RayFromHead()
+local ray = Ray.new(Player.Character.Head.Position, Player.Character.Head.CFrame.lookVector * 100)
+local ignoreList = {Player.Character} -- Kita tidak ingin ray mengenai karakter pemain itu sendiri
+
+local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+
+if hit then
+    return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: " .. tostring(hit.Normal) .. "\nObject found at position: \n" .. tostring(position)
+end
+end
 
 function bossCheck()
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
@@ -227,8 +250,13 @@ local zombieConsole = T1:AddConsole({
     ["source"] = "",
 })
 
-console.log = function(cont)
-    zombieConsole:Set(cont)
+local RaySystem = T6:AddConsole({
+    ["y"] = 50,
+    ["source"] = "",
+})
+
+console.log = function(localization,cont)
+    localization:Set(cont)
 end
 
 console.view = function(consoleParent)
@@ -247,7 +275,8 @@ PartKill:Add("Right Arm")
 PartKill:Add("Left Arm")
 PartKill:Add("Right Leg")
 
-console.log('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+console.log(zombieConsole,'You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+console.log(RaySystem,"Ray System Information\nHead: Loading Data..\nCamera: Loading Data..")
 
 local cratesList = T4:AddDropdown("Select body type", function(list)
 _G._CratesList = list
@@ -753,12 +782,18 @@ end)
 
 RunService.RenderStepped:Connect(function()
 if workspace:FindFirstChild(Player.Name) then
-   console.log('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+   console.log(zombieConsole,'You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 else
-   console.log('You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+   console.log(zombieConsole,'You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 end
 end)
+-- RayFromCamera()
+-- RayFromHead()
 
 RunService.RenderStepped:Connect(function()
 BodyColor()
+end)
+
+RunService.RenderStepped:Connect(function()
+console.log(RaySystem,"Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
 end)
