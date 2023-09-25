@@ -84,7 +84,7 @@ local ignoreList = {Player.Character} -- Daftar objek yang akan diabaikan saat r
 local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
 
 if hit then
-    return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: " .. tostring(hit.Normal) .. "\nObject found at position: \n" .. tostring(position)
+    return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: nil\nObject found at position: \n" .. tostring(position)
 end
 end
 
@@ -95,7 +95,7 @@ local ignoreList = {Player.Character} -- Kita tidak ingin ray mengenai karakter 
 local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
 
 if hit then
-    return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: " .. tostring(hit.Normal) .. "\nObject found at position: \n" .. tostring(position)
+    return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: nil\nObject found at position: \n" .. tostring(position)
 end
 end
 
@@ -120,11 +120,11 @@ end
 end
 
 function uppercase(context)
-	context:upper()
+	return context:upper()
 end
 
 function lowercase(context)
-	context:lower()
+	return context:lower()
 end
 
 function BossList()
@@ -310,10 +310,9 @@ _G.farm2 = bool
 
 while wait() do
 if _G.farm2 == false then break end
---local target = globalTarget
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = Player.Character:FindFirstChildOfClass("Tool").Name, ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
 end
 end)
 --[[
@@ -781,10 +780,18 @@ _G._BringShit = State
 end)
 
 RunService.RenderStepped:Connect(function()
+local r,p = pcall(function()
 if workspace:FindFirstChild(Player.Name) then
-   console.log(zombieConsole,'You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+   console.log(zombieConsole,'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
 else
-   console.log(zombieConsole,'You are a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+   console.log(zombieConsole,'You are a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+end
+end)
+
+if not r then
+if workspace:FindFirstChild(Player.Name) then
+   console.log(zombieConsole,"You are not a zombie!\nCurrent Map: Loading Map..\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+end
 end
 end)
 -- RayFromCamera()
@@ -793,7 +800,7 @@ end)
 RunService.RenderStepped:Connect(function()
 BodyColor()
 end)
-
+--[[
 RunService.RenderStepped:Connect(function()
 console.log(RaySystem,"Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
-end)
+end)]]
