@@ -560,6 +560,7 @@ game:GetService("UserInputService").JumpRequest:connect(function()
 end)
 end)
 
+local ConfirmToggle = false
 T5:AddButton("Gravity", function()
 game.Workspace.Gravity = 3
 end)
@@ -782,15 +783,15 @@ end)
 RunService.RenderStepped:Connect(function()
 local r,p = pcall(function()
 if workspace:FindFirstChild(Player.Name) then
-   console.log(zombieConsole,'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+   console.log(zombieConsole,'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
 else
-   console.log(zombieConsole,'You are a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+   console.log(zombieConsole,'You are a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
 end
 end)
 
 if not r then
 if workspace:FindFirstChild(Player.Name) then
-   console.log(zombieConsole,"You are not a zombie!\nCurrent Map: Loading Map..\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+   console.log(zombieConsole,"You are not a zombie!\nCurrent Map: Loading Map..\n\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
 end
 end
 end)
@@ -800,7 +801,7 @@ end)
 RunService.RenderStepped:Connect(function()
 BodyColor()
 end)
---[[
+
 RunService.RenderStepped:Connect(function()
 console.log(RaySystem,"Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
-end)]]
+end)
