@@ -39,6 +39,8 @@ local Player = game.Players.LocalPlayer
 local console = {}
 local virtualxray = {}
 local RunService = game:GetService("RunService")
+local normalgrav = workspace.Gravity
+local TweenService = game:GetService("TweenService")
 
 --// Made by Blissful#4992
 --// Locals:
@@ -204,6 +206,10 @@ if body:FindFirstChild("Genta") then
 end
 end
 
+function tweenfunction(coordination)
+	TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), {CFrame = coordination}):Play()
+end
+
 function getEquippedWeapon(player)
         local char = player.Character
         local weapon = char and char:FindFirstChildWhichIsA("Tool")
@@ -306,13 +312,28 @@ end
 end)
 
 T1:AddSwitch("Auto kill with teleport", function(bool)
-_G.farm2 = bool
+_G._tp_farm = bool
 
 while wait() do
-if _G.farm2 == false then break end
+if _G._tp_farm == false then break end
+if _G._tp_farm == false then workspace.Gravity = normalgrav end
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
+workspace.Gravity = 0
+end
+end)
+--workspace.Gravity = normalgrav
+T1:AddSwitch("Auto kill with tween teleport", function(bool)
+_G._tween_farm = bool
+
+while wait() do
+if _G._tween_farm == false then break end
+if _G._tween_farm == false then workspace.Gravity = normalgrav end
+game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
+tweenfunction((getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9)))
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
+workspace.Gravity = 0
 end
 end)
 --[[
@@ -562,7 +583,12 @@ end)
 
 local ConfirmToggle = false
 T5:AddButton("Gravity", function()
-game.Workspace.Gravity = 3
+ConfirmToggle = not ConfirmToggle
+if ConfirmToggle == true then
+   workspace.Gravity = 0
+else
+   workspace.Gravity = normalgrav
+end
 end)
 
 T1:AddSwitch("wallbang V1 [Patched]", function(State)
