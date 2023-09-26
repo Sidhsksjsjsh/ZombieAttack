@@ -15,7 +15,7 @@ end)
 
 local library = loadstring(game:HttpGet("https://pastebin.com/raw/Uub92rmN"))()
 
-local Hint = Instance.new("Hint", workspace)
+--local Hint = Instance.new("Hint", workspace)
 
 local Window = library:AddWindow("Orin - Cheat",
     {
@@ -29,7 +29,7 @@ local T4 = Window:AddTab("Crates")
 local T2 = Window:AddTab("Tool")
 local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
-local T6 = Window:AddTab("Player")
+local T6 = Window:AddTab("Crosshair")
 local T7 = Window:AddTab("Powerup")
 local workspace = game:GetService("Workspace")
 local playerpos = 0
@@ -284,7 +284,7 @@ PartKill:Add("Right Leg")
 console.log(zombieConsole,'You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 console.log(RaySystem,"Ray System Information\nHead: Loading Data..\nCamera: Loading Data..")
 
-local cratesList = T4:AddDropdown("Select body type", function(list)
+local cratesList = T4:AddDropdown("Select crate", function(list)
 _G._CratesList = list
 end)
 
@@ -430,7 +430,7 @@ gmt.__namecall = newcclosure(function(self, ...)
             end)
 end)
 ]]
-T1:AddButton("Bullet tracker [Damage only]", function()
+T1:AddButton("Damage tracker [Damage only]", function()
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
@@ -469,31 +469,31 @@ gmt.__namecall = newcclosure(function(self, ...)
 end)
 ]]
 T1:AddSwitch("kill platform", function(bool)
-local plr = game:service('Players').LocalPlayer
-local char = plr.Character
-local root = char.HumanoidRootPart
 _G.iszombie = bool
- 
+
+if not workspace:FindFirstChild("Kill Platform") then
 platform = Instance.new('Part', workspace)
 platform.Size = Vector3.new(100,0,100)
+platform.Name  = "Kill Platform"
 platform.Anchored = true
 platform.Position = Vector3.new(555,555,555)
 root.CFrame = platform.CFrame * CFrame.new(0,4,0)
-   
+end   
+
 if not _G.iszombie then
    for _, a in pairs(workspace.enemies:children()) do
        for _, b in pairs(a:children()) do
-           if b:IsA'Part' then
+           if b:IsA('Part') then
                b.Anchored = true
                b.CFrame = root.CFrame * CFrame.new(2,0,2)
            end
        end
    end
 elseif _G.iszombie then
-   for _, a in pairs(game:service'Players':GetPlayers()) do
+   for _, a in pairs(game:GetService('Players'):GetPlayers()) do
        if a.Character then
            for _, b in pairs(a.Character:children()) do
-               if b:IsA'Part' and a.Name ~= plr.Name then
+               if b:IsA('Part') and a.Name ~= Player.Name then
                    b.Anchored = true
                    b.CFrame =  root.CFrame * CFrame.new(2,0,2)
                end
@@ -686,12 +686,12 @@ end
 end
 end)
 ]]
-T6:AddTextBox("speed", function(e)
-game.Players.LocalPlayer.Character.Humanoid.WalkSpeed=e 
+T6:AddTextBox("Hitmarker Image Config", function(e)
+Player.PlayerGui.Aim.hitmarker.Image = "rbxassetid://" .. tonumber(e)
 end)
 
-T6:AddTextBox("jump", function(e)
-game.Players.LocalPlayer.Character.Humanoid.JumpPower=e 
+T6:AddTextBox("Cursor Image Config", function(e)
+Player.PlayerGui.Controls.Cursor.Image = "rbxassetid://" .. tonumber(e)
 end)
 
 T3:AddButton("Anti-Afk", function()
