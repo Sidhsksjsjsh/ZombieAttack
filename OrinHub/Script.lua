@@ -79,7 +79,7 @@ local previousHighlightedPart = nil
 local previousSelectionBox = nil
 local previousSurfaceAppearance = nil
 
-local function highlightPart(targetPart)
+function highlightPart(targetPart)
     if targetPart == previousHighlightedPart then
         return
     end
@@ -128,6 +128,17 @@ local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
 
 if hit then
     return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: nil\nObject found at position: \n" .. tostring(position)
+    --highlightPart(hit)
+end
+end
+
+function OnlyRayFromHead()
+local ray = Ray.new(Player.Character.Head.Position, Player.Character.Head.CFrame.lookVector * 100)
+local ignoreList = {Player.Character} -- Kita tidak ingin ray mengenai karakter pemain itu sendiri
+
+local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+
+if hit then
     highlightPart(hit)
 end
 end
@@ -718,11 +729,11 @@ end
 end)
 ]]
 T6:AddTextBox("Hitmarker Image Config", function(e)
-Player.PlayerGui.Aim.hitmarker.Image = "rbxassetid://" .. tonumber(e)
+Player.PlayerGui.Aim.hitmarker.Image = "rbxassetid://" .. e
 end)
 
 T6:AddTextBox("Cursor Image Config", function(e)
-Player.PlayerGui.Controls.Cursor.Image = "rbxassetid://" .. tonumber(e)
+Player.PlayerGui.Controls.Cursor.Image = "rbxassetid://" .. e
 end)
 
 T3:AddButton("Anti-Afk", function()
@@ -861,4 +872,5 @@ end)
 
 RunService.RenderStepped:Connect(function()
 console.log(RaySystem,"Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+OnlyRayFromHead()
 end)
