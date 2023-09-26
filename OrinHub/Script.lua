@@ -75,7 +75,37 @@ local function NewLine()
     return line
 end
 
---// Main Function:
+local previousHighlightedPart = nil
+local previousSelectionBox = nil
+local previousSurfaceAppearance = nil
+
+local function highlightPart(targetPart)
+    if targetPart == previousHighlightedPart then
+        return
+    end
+
+    if previousSelectionBox then
+        previousSelectionBox:Destroy()
+        previousSelectionBox = nil
+    end
+
+    if previousSurfaceAppearance then
+        previousSurfaceAppearance:Destroy()
+        previousSurfaceAppearance = nil
+    end
+
+    local newSurfaceAppearance = Instance.new("SurfaceAppearance")
+    newSurfaceAppearance.Parent = targetPart
+
+    local newSelectionBox = Instance.new("SelectionBox")
+    newSelectionBox.Color = Color3.new(1, 0, 0)
+    newSelectionBox.Adornee = targetPart
+    newSelectionBox.Parent = targetPart
+
+    previousSelectionBox = newSelectionBox
+    previousSurfaceAppearance = newSurfaceAppearance
+    previousHighlightedPart = targetPart
+end
 
 --workspace.ChildAdded:Connect(forZombie)
 function RayFromCamera()
@@ -98,6 +128,7 @@ local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
 
 if hit then
     return "Object name: " .. tostring(hit.Name) .. "\nSurface normal at hit point: nil\nObject found at position: \n" .. tostring(position)
+    highlightPart(hit)
 end
 end
 
