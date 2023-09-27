@@ -47,65 +47,6 @@ local TweenService = game:GetService("TweenService")
 local camera = workspace.CurrentCamera
 
 --// Settings:
-local on = true -- Use this if your making gui
-
-local Box_Color = Color3.fromRGB(0, 255, 50)
-local Box_Thickness = 1.4
-local Box_Transparency = 1 -- 1 Visible, 0 Not Visible
-
-local Tracers = true
-local Tracer_Color = Color3.fromRGB(0, 255, 50)
-local Tracer_Thickness = 1.4
-local Tracer_Transparency = 1 -- 1 Visible, 0 Not Visible
-
-local Autothickness = false -- Makes screen less encumbered
-
-local Team_Check = false
-local red = Color3.fromRGB(227, 52, 52)
-local green = Color3.fromRGB(88, 217, 24)
-
-local function NewLine()
-    local line = Drawing.new("Line")
-    line.Visible = false
-    line.From = Vector2.new(0, 0)
-    line.To = Vector2.new(1, 1)
-    line.Color = Box_Color
-    line.Thickness = Box_Thickness
-    line.Transparency = Box_Transparency
-    return line
-end
-
-local previousHighlightedPart = nil
-local previousSelectionBox = nil
-local previousSurfaceAppearance = nil
-
-function highlightPart(targetPart)
-    if targetPart == previousHighlightedPart then
-        return
-    end
-
-    if previousSelectionBox then
-        previousSelectionBox:Destroy()
-        previousSelectionBox = nil
-    end
-
-    if previousSurfaceAppearance then
-        previousSurfaceAppearance:Destroy()
-        previousSurfaceAppearance = nil
-    end
-
-    local newSurfaceAppearance = Instance.new("SurfaceAppearance")
-    newSurfaceAppearance.Parent = targetPart
-
-    local newSelectionBox = Instance.new("SelectionBox")
-    newSelectionBox.Color = Color3.new(1, 0, 0)
-    newSelectionBox.Adornee = targetPart
-    newSelectionBox.Parent = targetPart
-
-    previousSelectionBox = newSelectionBox
-    previousSurfaceAppearance = newSurfaceAppearance
-    previousHighlightedPart = targetPart
-end
 
 --workspace.ChildAdded:Connect(forZombie)
 function RayFromCamera()
@@ -132,16 +73,30 @@ if hit then
 end
 end
 
-function OnlyRayFromHead()
-local ray = Ray.new(Player.Character.Head.Position, Player.Character.Head.CFrame.lookVector * 100)
-local ignoreList = {Player.Character} -- Kita tidak ingin ray mengenai karakter pemain itu sendiri
+local uis = game:GetService("UserInputService")
+--local cam = game:GetService("Workspace").CurrentCamera
+--local ts = game:GetService("TweenService")
+--local plr = game:GetService("Players").LocalPlayer
 
-local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+local function isBehindWall(player)
+    local ray = Ray.new(camera.CFrame.Position, player.Head.Position - camera.CFrame.Position)
+    local hit = game.GetService(game, "Workspace").FindPartOnRayWithWhitelist(game.GetService(game, "Workspace"), ray, {game.GetService(game, "Workspace").enemies})
+    if hit and hit.Parent == player then
+        return false
+    end
+    return true
+end
 
-if hit then
-    highlightPart(hit)
-end
-end
+local namecall;
+namecall = hookmetamethod(game, "__namecall", function(Self, ...)
+	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
+		local args = {...}
+		local origin = args[1].Origin
+			args[1] = Ray.new(origin, closest.Head.Position - origin)
+		return namecall(Self, unpack(args))
+	end
+	return namecall(Self, ...)
+end)
 
 function bossCheck()
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
@@ -451,12 +406,13 @@ gmt.__namecall = newcclosure(function(self, ...)
 end)
 ]]
 local ConfirmSystem = {
-	Tracking = false 
+	Damage = false,
+	Tracking = false
 }
 
-T1:AddButton("Damage tracker [Damage only]", function()
-if ConfirmSystem.Tracking == false then
-ConfirmSystem.Tracking = true
+T1:AddButton("Damage tracker", function()
+if ConfirmSystem.Damage == false then
+ConfirmSystem.Damage = true
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
@@ -474,6 +430,22 @@ gmt.__namecall = newcclosure(function(self, ...)
                 end
                 return oldNamecall(self, ...)
             end)
+	end
+end)
+
+T1:AddButton("Bullet tracker", function()
+if ConfirmSystem.Tracking == false then
+ConfirmSystem.Tracking = true
+local namecall;
+namecall = hookmetamethod(game, "__namecall", function(Self, ...)
+	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
+		local args = {...}
+		local origin = args[1].Origin
+			args[1] = Ray.new(origin, getNearest().Head.Position - origin)
+		return namecall(Self, unpack(args))
+	end
+	return namecall(Self, ...)
+end)
 	end
 end)
 --[[
