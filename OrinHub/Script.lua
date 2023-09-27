@@ -729,12 +729,9 @@ gmt.__namecall = newcclosure(function(self, ...)
             end)
 end)
 ]]
-T1:AddToggle({
+T1:AddButton({
 Name = "Kill Platform",
-Default = false,
-Callback = function(bool)
-_G.iszombie = bool
-
+Callback = function()
 if not workspace:FindFirstChild("Kill Platform") then
 platform = Instance.new('Part', workspace)
 platform.Size = Vector3.new(100,0,100)
@@ -744,7 +741,7 @@ platform.Position = Vector3.new(555,555,555)
 Player.Character.HumanoidRootPart.CFrame = platform.CFrame * CFrame.new(0,4,0)
 end   
 
-if not _G.iszombie then
+if workspace:FindFirstChild(Player.Name) then
    for _, a in pairs(workspace.enemies:children()) do
        for _, b in pairs(a:children()) do
            if b:IsA('Part') then
@@ -753,13 +750,13 @@ if not _G.iszombie then
            end
        end
    end
-elseif _G.iszombie then
+else
    for _, a in pairs(game:GetService('Players'):GetPlayers()) do
        if a.Character then
            for _, b in pairs(a.Character:children()) do
                if b:IsA('Part') and a.Name ~= Player.Name then
                    b.Anchored = true
-                   b.CFrame =  Player.Character.HumanoidRootPart.CFrame * CFrame.new(2,0,2)
+                   b.CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.new(2,0,2)
                end
            end
        end
