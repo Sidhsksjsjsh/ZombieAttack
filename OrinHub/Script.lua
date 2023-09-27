@@ -411,7 +411,7 @@ local globalTarget = nil
 
 local zombieConsole = T1:AddParagraph("Zombie & Current map",'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()))
 
-local RaySystem = T6:AddParagraph("Ray System Information","Head: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()))
+--local RaySystem = T6:AddParagraph("Ray System Information","Head: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()))
 
 T1:AddDropdown({
 Name = "Target Part",
@@ -1138,6 +1138,6 @@ RunService.RenderStepped:Connect(function()
 BodyColor()
 end)
 
-RunService.RenderStepped:Connect(function()
-RaySystem:Set("Head: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()),"Ray System Information")
-end)
+--RunService.RenderStepped:Connect(function()
+--RaySystem:Set("Head: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()),"Ray System Information")
+--end)
