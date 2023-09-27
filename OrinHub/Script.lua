@@ -163,7 +163,7 @@ local function V3()
     local closestDist = math.huge
     local closestPlr = nil
     
-    local circleCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
     
     local function checkEntity(v)
         if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
@@ -193,7 +193,7 @@ local function V4()
 --V4:
     local closestDist = math.huge
     local closestPlr = nil
-    local circleCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
     
     for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
         if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
