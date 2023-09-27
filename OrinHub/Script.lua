@@ -231,7 +231,7 @@ game.Players.PlayerAdded:Connect(function(plr)
 end)]]
 
 virtualxray.Enemy = function(body)
-if not body:FindFirstChild("Genta") then
+--if not body:FindFirstChild("Genta") then
  local esp = Instance.new("Highlight")
  esp.Name = "Genta"
  esp.FillTransparency = 0
@@ -239,7 +239,7 @@ if not body:FindFirstChild("Genta") then
  esp.OutlineColor = Color3.new(1, 0.333333, 1)
  esp.OutlineTransparency = 0
  esp.Parent = body
-end
+--end
 end
 
 virtualxray.killesp = function(body)
@@ -573,26 +573,6 @@ EspProtocol:Add("Left Arm")
 EspProtocol:Add("Right Leg")
 ]]
 
-function BodyColor()
-for _,v in pairs(workspace.BossFolder:GetChildren()) do
-	virtualxray.Enemy(v["Head"])
-        virtualxray.Enemy(v["Torso"])
-	virtualxray.Enemy(v["Right Arm"])
-	virtualxray.Enemy(v["Left Arm"])
-	virtualxray.Enemy(v["Right Leg"])
-	virtualxray.Enemy(v["Left Leg"])
-end
-for _,v in pairs(workspace.enemies:GetChildren()) do
-	virtualxray.Enemy(v["Head"])
-        virtualxray.Enemy(v["Torso"])
-	virtualxray.Enemy(v["Right Arm"])
-	virtualxray.Enemy(v["Left Arm"])
-	virtualxray.Enemy(v["Right Leg"])
-	virtualxray.Enemy(v["Left Leg"])
-end
---#
-end
-
 --game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
 
 T4:AddSwitch("Auto Open Crate", function(bool)
@@ -858,6 +838,30 @@ end
 end)
 -- RayFromCamera()
 -- RayFromHead()
+
+function BodyColor()
+for _,v in pairs(workspace.BossFolder:GetChildren()) do
+if not v.Head:FindFirstChild("Genta") and not v.Torso:FindFirstChild("Genta") and not v["Right Arm"]:FindFirstChild("Genta") and not v["Left Arm"]:FindFirstChild("Genta") and not v["Right Leg"]:FindFirstChild("Genta") and not v["Left Leg"]:FindFirstChild("Genta") then
+	virtualxray.Enemy(v["Head"])
+        virtualxray.Enemy(v["Torso"])
+	virtualxray.Enemy(v["Right Arm"])
+	virtualxray.Enemy(v["Left Arm"])
+	virtualxray.Enemy(v["Right Leg"])
+	virtualxray.Enemy(v["Left Leg"])
+    end
+end
+for _,v in pairs(workspace.enemies:GetChildren()) do
+if not v.Head:FindFirstChild("Genta") and not v.Torso:FindFirstChild("Genta") and not v["Right Arm"]:FindFirstChild("Genta") and not v["Left Arm"]:FindFirstChild("Genta") and not v["Right Leg"]:FindFirstChild("Genta") and not v["Left Leg"]:FindFirstChild("Genta") then
+	virtualxray.Enemy(v["Head"])
+        virtualxray.Enemy(v["Torso"])
+	virtualxray.Enemy(v["Right Arm"])
+	virtualxray.Enemy(v["Left Arm"])
+	virtualxray.Enemy(v["Right Leg"])
+	virtualxray.Enemy(v["Left Leg"])
+    end
+end
+--#
+end
 
 RunService.RenderStepped:Connect(function()
 BodyColor()
