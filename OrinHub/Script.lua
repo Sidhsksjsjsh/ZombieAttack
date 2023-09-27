@@ -87,17 +87,6 @@ local function isBehindWall(player)
     return true
 end
 
-local namecall;
-namecall = hookmetamethod(game, "__namecall", function(Self, ...)
-	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
-		local args = {...}
-		local origin = args[1].Origin
-			args[1] = Ray.new(origin, closest.Head.Position - origin)
-		return namecall(Self, unpack(args))
-	end
-	return namecall(Self, ...)
-end)
-
 function bossCheck()
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
 	return v.Name
