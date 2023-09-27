@@ -265,18 +265,7 @@ function getEquippedWeapon(player)
 
 function KillZombies(weapontype,partaim)
 if weapontype == "gun" then
-local args = {
-    [1] = {
-        ["Normal"] = Vector3.new(0,0,0),
-        ["Direction"] = getNearest()[partaim].Position,
-        ["Name"] = getEquippedWeapon(game.Players.LocalPlayer),
-        ["Hit"] = getNearest()[partaim],
-        ["Origin"] = getNearest()[partaim].Position,
-        ["Pos"] = getNearest()[partaim].Position
-    }
-}
-
-game:GetService("ReplicatedStorage").Gun:FireServer(unpack(args))
+game:GetService("ReplicatedStorage").Gun:FireServer({["Normal"] = Vector3.new(0,0,0),["Direction"] = getNearest()[partaim].Position,["Name"] = getEquippedWeapon(game.Players.LocalPlayer),["Hit"] = getNearest()[partaim],["Origin"] = getNearest()[partaim].Position,["Pos"] = getNearest()[partaim].Position})
 elseif weapontype == "melee" then
 game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
 else
@@ -472,7 +461,13 @@ gmt.__namecall = newcclosure(function(self, ...)
             end)
 end)
 ]]
+local ConfirmSystem = {
+	Tracking = false 
+}
+
 T1:AddButton("Damage tracker [Damage only]", function()
+if ConfirmSystem.Tracking == false then
+ConfirmSystem.Tracking = true
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
@@ -490,6 +485,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                 end
                 return oldNamecall(self, ...)
             end)
+	end
 end)
 --[[
 T1:AddButton("Knife tracker [Throw and Hit] [One click] [Damage only]", function()
@@ -851,15 +847,15 @@ end)
 RunService.RenderStepped:Connect(function()
 local r,p = pcall(function()
 if workspace:FindFirstChild(Player.Name) then
-   console.log(zombieConsole,'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+   console.log(zombieConsole,'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()))
 else
-   console.log(zombieConsole,'You are a zombie!\nCurrent Map: ' .. tostring(getMap()) .. "\n\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+   console.log(zombieConsole,'You are a zombie!\nCurrent Map: ' .. tostring(getMap()))
 end
 end)
 
 if not r then
 if workspace:FindFirstChild(Player.Name) then
-   console.log(zombieConsole,"You are not a zombie!\nCurrent Map: Loading Map..\n\n\nRay System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+   console.log(zombieConsole,"You are not a zombie!\nCurrent Map: Loading Map..")
 end
 end
 end)
@@ -871,6 +867,6 @@ BodyColor()
 end)
 
 RunService.RenderStepped:Connect(function()
-console.log(RaySystem,"Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
-OnlyRayFromHead()
+--T6:AddLabel("Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
+--OnlyRayFromHead()
 end)
