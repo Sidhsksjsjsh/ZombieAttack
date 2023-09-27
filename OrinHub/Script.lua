@@ -134,12 +134,12 @@ local function isWithinFOVCircle(vector)
     local distToCenter = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
     return distToCenter <= Circle.Radius
 end
-
+--for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
 local function V1()
     local closestDist = math.huge
     local closestPlr = nil
-    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
-        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
+        if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
             if dist < closestDist and onScreen and not isBehindWall(v) then
@@ -148,8 +148,8 @@ local function V1()
             end
         end
     end
-    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
-        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
+        if v:FindFirstChild("Head") then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
             if dist < closestDist and onScreen and not isBehindWall(v) then
@@ -179,11 +179,11 @@ local function V2()
         end
     end
     
-    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
         checkEntity(v)
     end
     
-    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
+    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
         checkEntity(v)
     end
     
@@ -210,11 +210,11 @@ local function V3()
         end
     end
     
-    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
         checkEntity(v)
     end
     
-    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
+    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
         checkEntity(v)
     end
     
@@ -227,8 +227,8 @@ local function V4()
     local closestPlr = nil
     local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
     
-    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
-        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
+        if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             if isWithinFOVCircle(vector) then
                 local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
@@ -240,8 +240,8 @@ local function V4()
         end
     end
     
-    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
-        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
+        if v:FindFirstChild("Head") then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             if isWithinFOVCircle(vector) then
                 local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
@@ -422,7 +422,7 @@ _G._ZombieKillPart = prtaim
 end})
 
 T2:AddDropdown({
-Name = "Select a weapon to equip",
+Name = "Select a weapon",
 Default = "Pistol",
 Options = _rs_gun,
 Callback = function(items)
@@ -455,6 +455,12 @@ game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:I
 end})
 
 T2:AddButton({
+Name = "Buy selected weapon",
+Callback = function()
+game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("BuyItem_Cash",_G._rs_item)
+end})
+
+T2:AddButton({
 Name = "Equip all knives",
 Callback = function()
 for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
@@ -479,6 +485,11 @@ Name = "Auto Kill With Teleport",
 Default = false,
 Callback = function(bool)
 _G._tp_farm = bool
+if _G._tp_farm == true then
+	workspace.Gravity = 0
+else
+	workspace.Gravity = normalgrav
+end
 
 while wait() do
 if _G._tp_farm == false then break end
@@ -486,7 +497,6 @@ if _G._tp_farm == false then workspace.Gravity = normalgrav end
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
-workspace.Gravity = 0
 end
 end
 })
@@ -496,6 +506,11 @@ Name = "Auto Kill With Tween Teleport",
 Default = false,
 Callback = function(bool)
 _G._tween_farm = bool
+if _G._tween_farm == true then
+	workspace.Gravity = 0
+else
+	workspace.Gravity = normalgrav
+end
 
 while wait() do
 if _G._tween_farm == false then break end
@@ -503,7 +518,6 @@ if _G._tween_farm == false then workspace.Gravity = normalgrav end
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 tweenfunction((getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9)))
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
-workspace.Gravity = 0
 end
 end})
 --[[
@@ -693,10 +707,10 @@ local namecall;
 namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
 		local args = {...}
-		local closest = checkClosestEntity(_G._FOVrender)
-		if closest and ConfirmSystem.Tracking == true then
+		local Tracking = checkClosestEntity(_G._FOVrender)
+		if Tracking and ConfirmSystem.Tracking == true then
 			local origin = args[1].Origin
-			args[1] = Ray.new(origin, closest.Head.Position - origin)
+			args[1] = Ray.new(origin, Tracking.Head.Position - origin)
 		end
 		return namecall(Self, unpack(args))
 	end
