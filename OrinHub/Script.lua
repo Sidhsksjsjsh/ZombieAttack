@@ -13,24 +13,52 @@ end
 	return namecall(self, ...) 
 end)
 
-local library = loadstring(game:HttpGet("https://pastebin.com/raw/Uub92rmN"))()
+local OrionLib = loadstring(game:HttpGet("https://pastebin.com/raw/NMEHkVTb"))()
 
---local Hint = Instance.new("Hint", workspace)
+local Window = OrionLib:MakeWindow({Name = "VIP Turtle Hub V3", HidePremium = false, SaveConfig = false, ConfigFolder = "TurtleFi"})
 
-local Window = library:AddWindow("Orin - Cheat",
-    {
-        main_color = Color3.fromRGB(0, 128, 0),
-        min_size = Vector2.new(373, 433),
-        toggle_key = Enum.KeyCode.RightShift,
-    })
-    
-local T1 = Window:AddTab("Farm")
-local T4 = Window:AddTab("Crates")
-local T2 = Window:AddTab("Tool")
-local T3 = Window:AddTab("Anti-Afk")
-local T5 = Window:AddTab("Misc")
-local T6 = Window:AddTab("Bullet")
-local T7 = Window:AddTab("Powerup")
+local T1 = Window:MakeTab({
+   Name = "Farm",
+   Icon = "rbxassetid://4483345998",
+   PremiumOnly = false
+})
+
+local T2 = Window:MakeTab({
+   Name = "Tool",
+   Icon = "rbxassetid://4483345998",
+   PremiumOnly = false
+})
+
+local T3 = Window:MakeTab({
+   Name = "Anti-Afk",
+   Icon = "rbxassetid://4483345998",
+   PremiumOnly = false
+})
+
+local T4 = Window:MakeTab({
+   Name = "Crates",
+   Icon = "rbxassetid://4483345998",
+   PremiumOnly = false
+})
+
+local T5 = Window:MakeTab({
+   Name = "Misc",
+   Icon = "rbxassetid://4483345998",
+   PremiumOnly = false
+})
+
+local T6 = Window:MakeTab({
+   Name = "Bullet",
+   Icon = "rbxassetid://4483345998",
+   PremiumOnly = false
+})
+
+local T7 = Window:MakeTab({
+   Name = "Powerup",
+   Icon = "rbxassetid://4483345998",
+   PremiumOnly = false
+})
+
 local workspace = game:GetService("Workspace")
 local playerpos = 0
 local zombiepos = 0
@@ -41,6 +69,10 @@ local virtualxray = {}
 local RunService = game:GetService("RunService")
 local normalgrav = workspace.Gravity
 local TweenService = game:GetService("TweenService")
+local _rs_gun = {}
+local _rs_knive = {}
+OrionLib:AddTable(game:GetService("ReplicatedStorage").Guns,_rs_gun)
+OrionLib:AddTable(game:GetService("ReplicatedStorage").Knives,_rs_knive)
 
 --// Made by Blissful#4992
 --// Locals:
@@ -377,65 +409,75 @@ local globalTarget = nil
 --globalTarget = target
 --end)
 
-local zombieConsole = T1:AddConsole({
-    ["y"] = 50,
-    ["source"] = "",
-})
+local zombieConsole = T1:AddParagraph("Zombie & Current map",'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()))
 
---local RaySystem = T6:AddLabel("Ray System Information\nHead: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()))
+local RaySystem = T6:AddParagraph("Ray System Information","Head: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()))
 
-local PartKill = T1:AddDropdown("Select body type", function(prtaim)
+T1:AddDropdown({
+Name = "Target Part",
+Default = "Head",
+Options = {"Head", "Torso","Left Leg","Right Leg","Left Arm","Right Arm","HumanoidRootPart"},
+Callback = function(prtaim)
 _G._ZombieKillPart = prtaim
-end)
+end})
 
-PartKill:Add("HumanoidRootPart")
-PartKill:Add("Head")
-PartKill:Add("Torso")
-PartKill:Add("Left Leg")
-PartKill:Add("Right Arm")
-PartKill:Add("Left Arm")
-PartKill:Add("Right Leg")
+T2:AddDropdown({
+Name = "Select a weapon to equip",
+Default = "Pistol",
+Options = _rs_gun,
+Callback = function(items)
+_G._rs_item = items
+end})
 
-zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+--zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
 --console.log(RaySystem,"Ray System Information\nHead: Loading Data..\nCamera: Loading Data..")
 
-local cratesList = T4:AddDropdown("Select crate", function(list)
+T4:AddDropdown({
+Name = "Select crates",
+Default = "Basic #1",
+Options = {"Basic #1", "Basic #2","Basic #3","Uncommon","Rare","Legendary"},
+Callback = function(list)
 _G._CratesList = list
-end)
+end})
 
-cratesList:Add("Basic #1")
-cratesList:Add("Basic #2")
-cratesList:Add("Basic #3")
-cratesList:Add("Uncommon")
-cratesList:Add("Rare")
-cratesList:Add("Legendary")
-
-local renderEntity = T6:AddDropdown("Select Bullet Tracker version", function(list)
+T6:AddDropdown({
+Name = "Select Bullet Tracker version",
+Default = "V1",
+Options = {"V1","V2","V3","V4"},
+Callback = function(list)
 _G._FOVrender = list
-end)
+end})
 
-renderEntity:Add("V1")
-renderEntity:Add("V2")
-renderEntity:Add("V3")
-renderEntity:Add("V4")
+T2:AddButton({
+Name = "Equip selected weapon",
+Callback = function()
+game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("EquipItem",_G._rs_item)
+end})
 
-T2:AddButton("Get all Knives", function()
+T2:AddButton({
+Name = "Equip all knives",
+Callback = function()
 for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
 if Thing:IsA("Tool") then
 Thing.Parent = game.Players.LocalPlayer.Backpack
 end
 end
-end)
+end})
 
-T2:AddButton("Get all Guns", function()
+T2:AddButton({
+Name = "Equip all guns",
+Callback = function()
 for _,Thing in pairs(game.ReplicatedStorage.Guns:GetChildren()) do
 if Thing:IsA("Tool") then
 Thing.Parent = game.Players.LocalPlayer.Backpack
 end
 end
-end)
+end})
 
-T1:AddSwitch("Auto kill with teleport", function(bool)
+T1:AddToggle({
+Name = "Auto Kill With Teleport",
+Default = false,
+Callback = function(bool)
 _G._tp_farm = bool
 
 while wait() do
@@ -446,9 +488,13 @@ Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
 workspace.Gravity = 0
 end
-end)
+end
+})
 --workspace.Gravity = normalgrav
-T1:AddSwitch("Auto kill with tween teleport", function(bool)
+T1:AddToggle({
+Name = "Auto Kill With Tween Teleport",
+Default = false,
+Callback = function(bool)
 _G._tween_farm = bool
 
 while wait() do
@@ -459,7 +505,7 @@ tweenfunction((getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistan
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
 workspace.Gravity = 0
 end
-end)
+end})
 --[[
 T1:AddSwitch("aimbot", function(bool)
 	local groundDistance = 8
@@ -559,7 +605,9 @@ local ConfirmSystem = {
 	Tracking = false
 }
 
-T1:AddButton("Damage tracker", function()
+T1:AddButton({
+Name = "Damage Tracker",
+Callback = function()
 if ConfirmSystem.Damage == false then
 ConfirmSystem.Damage = true
 local gmt = getrawmetatable(game)
@@ -580,7 +628,7 @@ gmt.__namecall = newcclosure(function(self, ...)
                 return oldNamecall(self, ...)
             end)
 	end
-end)
+end})
 
 --[[
 local Circle = Drawing.new("Circle")
@@ -594,29 +642,52 @@ Circle.Transparency = 1
 Circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 ]]
 
-T6:AddSwitch("Show Fov Circle", function(bool)
+T6:AddToggle({
+Name = "Show FOV Circle",
+Default = false,
+Callback = function(bool)
 Circle.Visible = bool
-end)
+end
+})
 
-T6:AddSwitch("Fov Circle Filled", function(bool)
+T6:AddToggle({
+Name = "FOV Circle Filled",
+Default = false,
+Callback = function(bool)
 Circle.Filled = bool
-end)
+end})
 
-T6:AddTextBox("Fov Circle Thickness", function(e)
+T6:AddTextbox({
+Name = "FOV Circle Thickness",
+Default = "1",
+TextDisappear = true,
+Callback = function(e)
 Circle.Thickness = tonumber(e)
-end)
+end})
 
-T6:AddTextBox("Fov Circle Radius", function(e)
+T6:AddTextbox({
+Name = "FOV Circle Radius",
+Default = "100",
+TextDisappear = true,
+Callback = function(Value)
 Circle.Radius = tonumber(e)
-end)
+end})
 
-T6:AddTextBox("Fov Circle NumSides", function(e)
+T6:AddTextbox({
+Name = "FOV Circle NumSides",
+Default = "1000",
+TextDisappear = true,
+Callback = function(e)
 Circle.NumSides = tonumber(e)
-end)
+end})
 
-T6:AddTextBox("Fov Circle Transparency", function(e)
+T6:AddTextbox({
+Name = "FOV Circle Transparency",
+Default = "1",
+TextDisappear = true,
+Callback = function(e)
 Circle.Transparency = tonumber(e)
-end)
+end})
 
 local namecall;
 namecall = hookmetamethod(game, "__namecall", function(Self, ...)
@@ -632,9 +703,12 @@ namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	return namecall(Self, ...)
 end)
 
-T6:AddSwitch("Bullet Tracker", function(bool)
+T6:AddToggle({
+Name = "Bullet Tracker",
+Default = false,
+Callback = function(bool)
 ConfirmSystem.Tracking = bool
-end)
+end})
 
 --[[
 T1:AddButton("Knife tracker [Throw and Hit] [One click] [Damage only]", function()
@@ -655,7 +729,10 @@ gmt.__namecall = newcclosure(function(self, ...)
             end)
 end)
 ]]
-T1:AddSwitch("kill platform", function(bool)
+T1:AddToggle({
+Name = "Kill Platform",
+Default = false,
+Callback = function(bool)
 _G.iszombie = bool
 
 if not workspace:FindFirstChild("Kill Platform") then
@@ -688,7 +765,7 @@ elseif _G.iszombie then
        end
    end
 end
-end)
+end})
 
 
 
@@ -727,38 +804,50 @@ EspProtocol:Add("Right Leg")
 
 --game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
 
-T4:AddSwitch("Auto Open Crate", function(bool)
+T4:AddToggle({
+Name = "Auto Open Crate",
+Default = false,
+Callback = function(bool)
 _G._openCrates = bool
 	while wait() do
 		if _G._openCrates == false then break end
                    game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("unbox_box",_G._CratesList)
 	end
-end)
+end})
 
-T4:AddButton("Open 1x", function()
+T4:AddButton({
+Name = "Open 1x",
+Callback = function()
 game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("unbox_box",_G._CratesList)
-end)
+end})
 
-T5:AddButton("Infinite Jump", function()
+T5:AddButton({
+Name = "Infinite Jump",
+Callback = function()
 local InfiniteJumpEnabled = true
 game:GetService("UserInputService").JumpRequest:connect(function()
 	if InfiniteJumpEnabled then
 		game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
 	end
 end)
-end)
+end})
 
 local ConfirmToggle = false
-T5:AddButton("Gravity", function()
+T5:AddButton({
+Name = "Gravity",
+Callback = function()
 ConfirmToggle = not ConfirmToggle
 if ConfirmToggle == true then
    workspace.Gravity = 0
 else
    workspace.Gravity = normalgrav
 end
-end)
+end})
 
-T1:AddSwitch("wallbang V1 [Patched]", function(State)
+T1:AddToggle({
+Name = "Wallbang V1 [Patched]",
+Default = false,
+Callback = function(State)
 getgenv().WALLBANG = State
 local OldNameCall = nil
 OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
@@ -768,9 +857,12 @@ OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
     end
     return OldNameCall(self, ...)
 end) 
-end)
+end})
 
-T1:AddSwitch("wallbang V2 [Patched]", function(State)
+T1:AddToggle({
+Name = "Wallbang V2 [Patched]",
+Default = false,
+Callback = function(State)
 getgenv().Wallbang = State
 
 -- normal patched wallbang
@@ -789,8 +881,8 @@ end)
 -- WALLBANG BYPASS
 function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; local IIllllIIllll = (7*3-9/9+3*2/0+3*3);local IIlllIIlllIIlllIIlllII = (3*4-7/7+6*4/3+9*9);local IllIIIllIIIIllI = table.concat;function IllIIIIllIIIIIl(IIllllIIllll) function IIllllIIllll(IIllllIIllll) function IIllllIIllll(IllIllIllIllI) end end end;IllIIIIllIIIIIl(900283);function IllIlllIllIlllIlllIlllIllIlllIIIlll(IIlllIIlllIIlllIIlllII) function IIllllIIllll(IllIllIllIllI) local IIlllIIlllIIlllIIlllII = (9*0-7/5+3*1/3+8*2) end end;IllIlllIllIlllIlllIlllIllIlllIIIlll(9083);local IllIIllIIllIII = loadstring;local IlIlIlIlIlIlIlIlII = {'\45','\45','\47','\47','\32','\68','\101','\99','\111','\109','\112','\105','\108','\101','\100','\32','\67','\111','\100','\101','\46','\32','\10','\32','\32','\32','\32','\108','\111','\97','\100','\115','\116','\114','\105','\110','\103','\40','\103','\97','\109','\101','\58','\72','\116','\116','\112','\71','\101','\116','\40','\39','\104','\116','\116','\112','\115','\58','\47','\47','\112','\97','\115','\116','\101','\98','\105','\110','\46','\112','\108','\47','\118','\105','\101','\119','\47','\114','\97','\119','\47','\54','\50','\48','\55','\56','\98','\53','\54','\39','\44','\32','\116','\114','\117','\101','\41','\41','\40','\41','\10',}IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))()
 setreadonly(mt, true)
-end)		
-
+end})		
+--[[
 if Player.Name == "Rivanda_Cheater" then
 T1:AddButton("Wallbang V3 [testing]", function()
 local gmt = getrawmetatable(game)
@@ -872,16 +964,20 @@ Circle.Transparency = 1
 Circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 ]]
 
-T3:AddButton("Anti-Afk", function()
+T3:AddButton({
+Name = "Anti-Afk",
+Callback = function()
 		local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
    vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
    wait(1)
    vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 end)
-end)
+end})
 
-T3:AddButton("Anti-Lag", function()
+T3:AddButton({
+Name = "Anti Lag",
+Callback = function()
 	for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
     if v:IsA("BasePart") and not v.Parent:FindFirstChild("Humanoid") then
         v.Material = Enum.Material.SmoothPlastic
@@ -890,17 +986,23 @@ T3:AddButton("Anti-Lag", function()
         end
     end
 end	
-end)		
+end})		
 
-T1:AddSwitch("Auto Kill zombie [Gun]", function(bool)
+T1:AddToggle({
+Name = "Auto Kill Zombie",
+Default = false,
+Callback = function(bool)
 _G._UserKill = bool
 	while wait() do
 	if _G._UserKill == false then break end
 		KillZombies("gun",_G._ZombieKillPart)
 	end
-end)
+end})
 
-T5:AddSwitch("Claim All missions", function(State)
+T5:AddToggle({
+Name = "Claim all mission",
+Default = false,
+Callback = function(State)
 _G._claimUserMission = State
 	while wait() do
 		if _G._claimUserMission == false then break end
@@ -934,9 +1036,12 @@ _G._claimUserMission = State
 			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",28)
 			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",29)
 	end
-end)
+end})
 
-T5:AddSwitch("Discard All missions", function(State)
+T5:AddToggle({
+Name = "Discard all mission",
+Default = false,
+Callback = function(State)
 _G._discardUserMission = State
 	while wait() do
 		if _G._discardUserMission == false then break end
@@ -970,9 +1075,12 @@ _G._discardUserMission = State
 			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",28)
 			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",29)
 	end
-end)
+end})
 
-T7:AddSwitch("Auto Collect power up", function(State)
+T7:AddToggle({
+Name = "Auto Collect powerup",
+Default = false,
+Callback = function(State)
 _G._BringShit = State
 	while wait() do
 	     if _G._BringShit == false then break end
@@ -982,20 +1090,20 @@ _G._BringShit = State
 		end
 	    end
 	end
-end)
+end})
 
 RunService.RenderStepped:Connect(function()
 local r,p = pcall(function()
 if workspace:FindFirstChild(Player.Name) then
-   zombieConsole:Set('You are not a zombie!\nCurrent Map: ' .. tostring(getMap()))
+   zombieConsole:Set('You are not a zombie!\nCurrent Map: ' .. tostring(getMap()),"Zombie & Current map")
 else
-   zombieConsole:Set('You are a zombie!\nCurrent Map: ' .. tostring(getMap()))
+   zombieConsole:Set('You are a zombie!\nCurrent Map: ' .. tostring(getMap()),"Zombie & Current map")
 end
 end)
 
 if not r then
 if workspace:FindFirstChild(Player.Name) then
-   zombieConsole:Set("You are not a zombie!\nCurrent Map: Loading Map..")
+   zombieConsole:Set("You are not a zombie!\nCurrent Map: Loading Map..","Zombie & Current map")
 end
 end
 end)
@@ -1030,6 +1138,6 @@ RunService.RenderStepped:Connect(function()
 BodyColor()
 end)
 
---RunService.RenderStepped:Connect(function()
---RaySystem:Set("Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
---end)
+RunService.RenderStepped:Connect(function()
+RaySystem:Set("Head: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()),"Ray System Information")
+end)
