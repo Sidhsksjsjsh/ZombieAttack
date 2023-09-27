@@ -95,7 +95,7 @@ Circle.Visible = false
 Circle.NumSides = 1000
 Circle.Filled = false
 Circle.Transparency = 1
-Circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 
 local function isWithinFOVCircle(vector)
     local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
