@@ -87,6 +87,32 @@ local function isBehindWall(player)
     return true
 end
 
+local function getClosest()
+    local closestDist = math.huge
+    local closestPlr = nil
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
+            if dist < closestDist and onScreen and not isBehindWall(v) then
+                closestDist = dist
+                closestPlr = v
+            end
+        end
+    end
+    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
+        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
+            if dist < closestDist and onScreen and not isBehindWall(v) then
+                closestDist = dist
+                closestPlr = v
+            end
+        end
+    end
+    return closestPlr
+end
+
 function bossCheck()
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
 	return v.Name
@@ -429,8 +455,11 @@ local namecall;
 namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
 		local args = {...}
-		local origin = args[1].Origin
-			args[1] = Ray.new(origin, getNearest().Head.Position - origin)
+		local closest = getClosest()
+		if closest then
+			local origin = args[1].Origin
+			args[1] = Ray.new(origin, closest.Head.Position - origin)
+		end
 		return namecall(Self, unpack(args))
 	end
 	return namecall(Self, ...)
