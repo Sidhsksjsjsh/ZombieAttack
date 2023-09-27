@@ -618,15 +618,12 @@ T6:AddTextBox("Fov Circle Transparency", function(e)
 Circle.Transparency = tonumber(e)
 end)
 
-T6:AddButton("Enable Bullet tracker", function()
-if ConfirmSystem.Tracking == false then
-ConfirmSystem.Tracking = true
 local namecall;
 namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
 		local args = {...}
 		local closest = checkClosestEntity(_G._FOVrender)
-		if closest then
+		if closest and ConfirmSystem.Tracking == true then
 			local origin = args[1].Origin
 			args[1] = Ray.new(origin, closest.Head.Position - origin)
 		end
@@ -634,8 +631,11 @@ namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	end
 	return namecall(Self, ...)
 end)
-	end
+
+T6:AddSwitch("Bullet Tracker", function(bool)
+ConfirmSystem.Tracking = bool
 end)
+
 --[[
 T1:AddButton("Knife tracker [Throw and Hit] [One click] [Damage only]", function()
 local gmt = getrawmetatable(game)
@@ -664,7 +664,7 @@ platform.Size = Vector3.new(100,0,100)
 platform.Name  = "Kill Platform"
 platform.Anchored = true
 platform.Position = Vector3.new(555,555,555)
-root.CFrame = platform.CFrame * CFrame.new(0,4,0)
+Player.Character.HumanoidRootPart.CFrame = platform.CFrame * CFrame.new(0,4,0)
 end   
 
 if not _G.iszombie then
