@@ -289,14 +289,6 @@ local zombieConsole = T1:AddConsole({
 
 --local RaySystem = T6:AddLabel("Ray System Information\nHead: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()))
 
-console.log = function(localization,cont)
-    localization:Set(cont)
-end
-
-console.view = function(consoleParent)
-	return consoleParent:Get()
-end
-
 local PartKill = T1:AddDropdown("Select body type", function(prtaim)
 _G._ZombieKillPart = prtaim
 end)
@@ -309,8 +301,8 @@ PartKill:Add("Right Arm")
 PartKill:Add("Left Arm")
 PartKill:Add("Right Leg")
 
-console.log(zombieConsole,'You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
-console.log(RaySystem,"Ray System Information\nHead: Loading Data..\nCamera: Loading Data..")
+zombieConsole:Set('You are not a zombie!\n<!===================>\nCurrent Map: ' .. tostring(getMap()))
+--console.log(RaySystem,"Ray System Information\nHead: Loading Data..\nCamera: Loading Data..")
 
 local cratesList = T4:AddDropdown("Select crate", function(list)
 _G._CratesList = list
