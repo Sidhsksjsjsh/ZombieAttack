@@ -29,7 +29,7 @@ local T4 = Window:AddTab("Crates")
 local T2 = Window:AddTab("Tool")
 local T3 = Window:AddTab("Anti-Afk")
 local T5 = Window:AddTab("Misc")
-local T6 = Window:AddTab("Crosshair")
+local T6 = Window:AddTab("Bullet")
 local T7 = Window:AddTab("Powerup")
 local workspace = game:GetService("Workspace")
 local playerpos = 0
@@ -87,7 +87,23 @@ local function isBehindWall(player)
     return true
 end
 
-local function getClosest()
+local Circle = Drawing.new("Circle")
+Circle.Color = Color3.fromRGB(22, 13, 56)
+Circle.Thickness = 1
+Circle.Radius = 100
+Circle.Visible = false
+Circle.NumSides = 1000
+Circle.Filled = false
+Circle.Transparency = 1
+Circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+
+local function isWithinFOVCircle(vector)
+    local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    local distToCenter = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+    return distToCenter <= Circle.Radius
+end
+
+local function V1()
     local closestDist = math.huge
     local closestPlr = nil
     for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
@@ -111,6 +127,115 @@ local function getClosest()
         end
     end
     return closestPlr
+end
+
+local function V2()
+--V2:
+    local closestDist = math.huge
+    local closestPlr = nil
+    
+    local function checkEntity(v)
+        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            if isWithinFOVCircle(vector) then
+                local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
+                if dist < closestDist and onScreen and not isBehindWall(v) then
+                    closestDist = dist
+                    closestPlr = v
+                end
+            end
+        end
+    end
+    
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+        checkEntity(v)
+    end
+    
+    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
+        checkEntity(v)
+    end
+    
+    return closestPlr
+end
+
+local function V3()
+--V3:
+    local closestDist = math.huge
+    local closestPlr = nil
+    
+    local circleCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    
+    local function checkEntity(v)
+        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            if isWithinFOVCircle(vector) then
+                local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+                if dist < closestDist and onScreen and not isBehindWall(v) then
+                    closestDist = dist
+                    closestPlr = v
+                end
+            end
+        end
+    end
+    
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+        checkEntity(v)
+    end
+    
+    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
+        checkEntity(v)
+    end
+    
+    return closestPlr
+end
+
+local function V4()
+--V4:
+    local closestDist = math.huge
+    local closestPlr = nil
+    local circleCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            if isWithinFOVCircle(vector) then
+                local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+                if dist < closestDist and onScreen and not isBehindWall(v) then
+                    closestDist = dist
+                    closestPlr = v
+                end
+            end
+        end
+    end
+    
+    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetChildren(game.GetService(game, "Workspace").BossFolder) do
+        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            if isWithinFOVCircle(vector) then
+                local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+                if dist < closestDist and onScreen and not isBehindWall(v) then
+                    closestDist = dist
+                    closestPlr = v
+                end
+            end
+        end
+    end
+    
+    return closestPlr
+end
+
+local function checkClosestEntity(version)
+if version == "V1" then
+	return V1()
+elseif version == "V2" then
+	return V2()
+elseif version == "V3" then
+	return V3()
+elseif version == "V4" then
+	return V4()
+else
+	return "INVALID VERSION"
+end
 end
 
 function bossCheck()
@@ -285,6 +410,15 @@ cratesList:Add("Uncommon")
 cratesList:Add("Rare")
 cratesList:Add("Legendary")
 
+local renderEntity = T6:AddDropdown("Select Bullet Tracker version", function(list)
+_G._FOVrender = list
+end)
+
+renderEntity:Add("V1")
+renderEntity:Add("V2")
+renderEntity:Add("V3")
+renderEntity:Add("V4")
+
 T2:AddButton("Get all Knives", function()
 for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
 if Thing:IsA("Tool") then
@@ -448,14 +582,50 @@ gmt.__namecall = newcclosure(function(self, ...)
 	end
 end)
 
-T1:AddButton("Bullet tracker", function()
+--[[
+local Circle = Drawing.new("Circle")
+Circle.Color = Color3.fromRGB(22, 13, 56)
+Circle.Thickness = 1
+Circle.Radius = 100
+Circle.Visible = true
+Circle.NumSides = 1000
+Circle.Filled = false
+Circle.Transparency = 1
+Circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+]]
+
+T6:AddSwitch("Show Fov Circle", function(bool)
+Circle.Visible = bool
+end)
+
+T6:AddSwitch("Fov Circle Filled", function(bool)
+Circle.Filled = bool
+end)
+
+T6:AddTextBox("Fov Circle Thickness", function(e)
+Circle.Thickness = tonumber(e)
+end)
+
+T6:AddTextBox("Fov Circle Radius", function(e)
+Circle.Radius = tonumber(e)
+end)
+
+T6:AddTextBox("Fov Circle NumSides", function(e)
+Circle.NumSides = tonumber(e)
+end)
+
+T6:AddTextBox("Fov Circle Transparency", function(e)
+Circle.Transparency = tonumber(e)
+end)
+
+T6:AddButton("Enable Bullet tracker", function()
 if ConfirmSystem.Tracking == false then
 ConfirmSystem.Tracking = true
 local namecall;
 namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
 		local args = {...}
-		local closest = getClosest()
+		local closest = checkClosestEntity(_G._FOVrender)
 		if closest then
 			local origin = args[1].Origin
 			args[1] = Ray.new(origin, closest.Head.Position - origin)
@@ -682,14 +852,25 @@ end
   end
 end
 end)
-]]
-T6:AddTextBox("Hitmarker Image Config", function(e)
+
+T6:AddTextBox("Hi", function(e)
 Player.PlayerGui.Aim.hitmarker.Image = "rbxassetid://" .. e
 end)
 
 T6:AddTextBox("Cursor Image Config", function(e)
 Player.PlayerGui.Controls.Cursor.Image = "rbxassetid://" .. e
 end)
+
+local Circle = Drawing.new("Circle")
+Circle.Color = Color3.fromRGB(22, 13, 56)
+Circle.Thickness = 1
+Circle.Radius = 100
+Circle.Visible = true
+Circle.NumSides = 1000
+Circle.Filled = false
+Circle.Transparency = 1
+Circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+]]
 
 T3:AddButton("Anti-Afk", function()
 		local vu = game:GetService("VirtualUser")
