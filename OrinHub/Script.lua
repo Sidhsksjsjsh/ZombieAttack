@@ -605,18 +605,13 @@ local ConfirmSystem = {
 	Tracking = false
 }
 
-T1:AddButton({
-Name = "Damage Tracker",
-Callback = function()
-if ConfirmSystem.Damage == false then
-ConfirmSystem.Damage = true
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
 gmt.__namecall = newcclosure(function(self, ...)
                 local Args = {...}
                 local method = getnamecallmethod()
-                if tostring(self) == "Gun" and tostring(method) == "FireServer" then
+                if tostring(self) == "Gun" and tostring(method) == "FireServer" and ConfirmSystem.Damage == true then
 		      Args[1]["Normal"] = Vector3.new(0,0,0)
                       Args[1]["Direction"] = getNearest()[_G._ZombieKillPart].Position
                       Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
@@ -627,7 +622,12 @@ gmt.__namecall = newcclosure(function(self, ...)
                 end
                 return oldNamecall(self, ...)
             end)
-	end
+
+T1:AddToggle({
+Name = "Damage Tracker",
+Default = false,
+Callback = function(bool)
+ConfirmSystem.Damage = bool
 end})
 
 --[[
@@ -669,7 +669,7 @@ T6:AddTextbox({
 Name = "FOV Circle Radius",
 Default = "100",
 TextDisappear = true,
-Callback = function(Value)
+Callback = function(e)
 Circle.Radius = tonumber(e)
 end})
 
@@ -843,7 +843,7 @@ else
    workspace.Gravity = normalgrav
 end
 end})
-
+--[[
 T1:AddToggle({
 Name = "Wallbang V1 [Patched]",
 Default = false,
