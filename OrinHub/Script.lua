@@ -824,15 +824,15 @@ end)
 RunService.RenderStepped:Connect(function()
 local r,p = pcall(function()
 if workspace:FindFirstChild(Player.Name) then
-   console.log(zombieConsole,'You are not a zombie!\nCurrent Map: ' .. tostring(getMap()))
+   zombieConsole:Set('You are not a zombie!\nCurrent Map: ' .. tostring(getMap()))
 else
-   console.log(zombieConsole,'You are a zombie!\nCurrent Map: ' .. tostring(getMap()))
+   zombieConsole:Set('You are a zombie!\nCurrent Map: ' .. tostring(getMap()))
 end
 end)
 
 if not r then
 if workspace:FindFirstChild(Player.Name) then
-   console.log(zombieConsole,"You are not a zombie!\nCurrent Map: Loading Map..")
+   zombieConsole:Set("You are not a zombie!\nCurrent Map: Loading Map..")
 end
 end
 end)
