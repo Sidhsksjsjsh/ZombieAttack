@@ -520,7 +520,7 @@ if not _G.iszombie then
        for _, b in pairs(a:children()) do
            if b:IsA('Part') then
                b.Anchored = true
-               b.CFrame = root.CFrame * CFrame.new(2,0,2)
+               b.CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.new(2,0,2)
            end
        end
    end
@@ -530,7 +530,7 @@ elseif _G.iszombie then
            for _, b in pairs(a.Character:children()) do
                if b:IsA('Part') and a.Name ~= Player.Name then
                    b.Anchored = true
-                   b.CFrame =  root.CFrame * CFrame.new(2,0,2)
+                   b.CFrame =  Player.Character.HumanoidRootPart.CFrame * CFrame.new(2,0,2)
                end
            end
        end
