@@ -287,10 +287,7 @@ local zombieConsole = T1:AddConsole({
     ["source"] = "",
 })
 
-local RaySystem = T6:AddConsole({
-    ["y"] = 50,
-    ["source"] = "",
-})
+local RaySystem = T6:AddLabel("Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
 
 console.log = function(localization,cont)
     localization:Set(cont)
@@ -867,6 +864,5 @@ BodyColor()
 end)
 
 RunService.RenderStepped:Connect(function()
---T6:AddLabel("Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
---OnlyRayFromHead()
+RaySystem:Set("Ray System Information\nHead: \n" .. RayFromHead() .. "\nCamera: \n" .. RayFromCamera())
 end)
