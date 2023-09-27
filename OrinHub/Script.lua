@@ -138,8 +138,8 @@ end
 local function V1()
     local closestDist = math.huge
     local closestPlr = nil
-    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
-        if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+        if game.FindFirstChild(v,"Humanoid") and v.Humanoid.Health > 0 then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
             if dist < closestDist and onScreen and not isBehindWall(v) then
@@ -147,9 +147,9 @@ local function V1()
                 closestPlr = v
             end
         end
-    end
-    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
-        if v:FindFirstChild("Head") then
+    end --BossFolder
+    for _, v in next, game.GetService(game,"Workspace").BossFolder.GetChildren(game.GetService(game,"Workspace").BossFolder) do
+        if game.FindFirstChild(v,"Head") then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
             if dist < closestDist and onScreen and not isBehindWall(v) then
@@ -167,7 +167,7 @@ local function V2()
     local closestPlr = nil
     
     local function checkEntity(v)
-        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+        if game.FindFirstChild(v,"Humanoid") and v.Humanoid.Health > 0 then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             if isWithinFOVCircle(vector) then
                 local dist = (Vector2.new(uis.GetMouseLocation(uis).X, uis.GetMouseLocation(uis).Y) - Vector2.new(vector.X, vector.Y)).Magnitude
@@ -179,11 +179,11 @@ local function V2()
         end
     end
     
-    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
         checkEntity(v)
     end
     
-    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
+    for _, v in next, game.GetService(game,"Workspace").BossFolder.GetChildren(game.GetService(game,"Workspace").BossFolder) do
         checkEntity(v)
     end
     
@@ -198,7 +198,7 @@ local function V3()
     local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
     
     local function checkEntity(v)
-        if game.FindFirstChild(v, "Humanoid") and v.Humanoid.Health > 0 then
+        if game.FindFirstChild(v,"Humanoid") and v.Humanoid.Health > 0 then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             if isWithinFOVCircle(vector) then
                 local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
@@ -210,11 +210,11 @@ local function V3()
         end
     end
     
-    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
         checkEntity(v)
     end
     
-    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
+    for _, v in next, game.GetService(game,"Workspace").BossFolder.GetChildren(game.GetService(game,"Workspace").BossFolder) do
         checkEntity(v)
     end
     
@@ -227,8 +227,8 @@ local function V4()
     local closestPlr = nil
     local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
     
-    for _, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
-        if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+        if game.FindFirstChild(v,"Humanoid") and v.Humanoid.Health > 0 then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             if isWithinFOVCircle(vector) then
                 local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
@@ -240,8 +240,8 @@ local function V4()
         end
     end
     
-    for _, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
-        if v:FindFirstChild("Head") then
+    for _, v in next, game.GetService(game,"Workspace").BossFolder.GetChildren(game.GetService(game,"Workspace").BossFolder) do
+        if game.FindFirstChild(v,"Head") then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
             if isWithinFOVCircle(vector) then
                 local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
