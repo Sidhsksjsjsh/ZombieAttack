@@ -270,18 +270,20 @@ else
 end
 end
 
-function bossCheck()
-for _,v in pairs(workspace.BossFolder:GetChildren()) do
-	return v.Name
+function GetToolName()
+for _,Thing in pairs(game:GetService("ReplicatedStorage").Guns:GetChildren()) do
+   if Thing:IsA("Tool") then
+      return Thing.Name
+   end
+ end
 end
-end
-
-function isBoss()
-if workspace.BossFolder:FindFirstChild(bossCheck()) then
-	return true
-else
-	return false
-end
+--game.Players.LocalPlayer.Backpack
+function EquipGun()
+for _,Thing in pairs(Player.Backpack:GetChildren()) do
+   if Thing:IsA("Tool") and Thing:FindFirstChild(GetToolName()) then
+      Thing.Parent = Player.Character
+   end
+ end
 end
 
 function getMap()
@@ -480,6 +482,15 @@ end
 end
 end})
 
+--EquipGun()
+
+T1:AddToggle({
+Name = "auto holds the weapon while Auto kill is active",
+Default = false,
+Callback = function(bool)
+_G._userGun = bool
+end})
+
 T1:AddToggle({
 Name = "Auto Kill With Teleport",
 Default = false,
@@ -493,10 +504,16 @@ end
 
 while wait() do
 if _G._tp_farm == false then break end
-if _G._tp_farm == false then workspace.Gravity = normalgrav end
+if _G._userGun == true then
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
+EquipGun()
+else
+game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
+Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
+end
 end
 end
 })
@@ -514,11 +531,24 @@ end
 
 while wait() do
 if _G._tween_farm == false then break end
-if _G._tween_farm == false then workspace.Gravity = normalgrav end
+if _G._userGun == true then
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 tweenfunction((getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9)))
 game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
+EquipGun()
+else
+game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
+Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
 end
+end
+end})
+
+T1:AddToggle({
+Name = "Auto equip gun",
+Default = false,
+Callback = function(bool)
+_G._userGun = bool
 end})
 --[[
 T1:AddSwitch("aimbot", function(bool)
