@@ -71,8 +71,16 @@ local normalgrav = workspace.Gravity
 local TweenService = game:GetService("TweenService")
 local _rs_gun = {}
 local _rs_knive = {}
+local _rs_enemies = {}
+local _rs_bosses = {}
+local _rs_auras = {}
+local vu = game:GetService("VirtualUser")
 OrionLib:AddTable(game:GetService("ReplicatedStorage").Guns,_rs_gun)
 OrionLib:AddTable(game:GetService("ReplicatedStorage").Knives,_rs_knive)
+OrionLib:AddTable(game:GetService("ReplicatedStorage").Enemies,_rs_enemies)
+OrionLib:AddTable(game:GetService("ReplicatedStorage").Bosses,_rs_bosses)
+OrionLib:AddTable(game:GetService("ReplicatedStorage").assets.Auras,_rs_auras)
+
 
 --// Made by Blissful#4992
 --// Locals:
@@ -646,7 +654,8 @@ end)
 ]]
 local ConfirmSystem = {
 	Damage = false,
-	Tracking = false
+	Tracking = false,
+	Wallbang = false
 }
 
 local gmt = getrawmetatable(game)
@@ -898,22 +907,76 @@ else
    workspace.Gravity = normalgrav
 end
 end})
---[[
-T1:AddToggle({
-Name = "Wallbang V1 [Patched]",
+
+--getnamecallmethod() == "FindPartOnRayWithWhitelist"
+
+local bullet = {
+	Penetrate_1 = false,
+	penetrate_2 = false,
+	Reverse = false
+}
+
+local bulletSystemV1 = nil
+bulletSystemV1 = hookmetamethod(game, "__namecall", function(self, ...)
+  local Args = {...}
+    if getnamecallmethod() == "FindPartOnRayWithIgnoreList" and bullet.Penetrate_1 == true then
+	if bullet.Reverse == false then
+           table.insert(Args[2],workspace.map)
+	else
+	   table.insert(workspace.map,Args[2])
+	end
+    end
+    return bulletSystemV1(self, ...)
+end)
+
+local bulletSystemV2 = nil
+bulletSystemV2 = hookmetamethod(game, "__namecall", function(self, ...)
+  local Args = {...}
+    if getnamecallmethod() == "FindPartOnRayWithWhitelist" and bullet.Penetrate_2 == true then
+       if bullet.Reverse == false then
+           table.insert(Args[2],workspace.map)
+	else
+	   table.insert(workspace.map,Args[2])
+	end
+    end
+    return bulletSystemV2(self, ...)
+end)
+
+if Player.Name == "Rivanda_Cheater" then
+T6:AddToggle({
+Name = "Magic Bullet V1",
 Default = false,
 Callback = function(State)
-getgenv().WALLBANG = State
-local OldNameCall = nil
-OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-  local Args = {...}
-    if getnamecallmethod() == "FindPartOnRayWithIgnoreList" and getgenv().WALLBANG then
-       table.insert(Args[2], workspace.map)
-    end
-    return OldNameCall(self, ...)
-end) 
+bullet.Penetrate_1 = State
+
+if bullet.Penetrate_1 == true then
+	OrionLib:MakeNotification({Name = "Magic Bullet V1",Content = "Magic Bullet V1 Enabled, Your bullet will penetrate the wall if the bullet collides with the wall",Image = "rbxassetid://",Time = 5})
+else
+	OrionLib:MakeNotification({Name = "Magic Bullet V1",Content = "Magic Bullet V1 Disabled",Image = "rbxassetid://",Time = 5})
+end
 end})
 
+T6:AddToggle({
+Name = "Magic Bullet V2",
+Default = false,
+Callback = function(State)
+bullet.Penetrate_2 = State
+
+if bullet.Penetrate_2 == true then
+	OrionLib:MakeNotification({Name = "Magic Bullet V2",Content = "Magic Bullet V2 Enabled, Your bullet will penetrate the wall if the bullet collides with the wall",Image = "rbxassetid://",Time = 5})
+else
+	OrionLib:MakeNotification({Name = "Magic Bullet V2",Content = "Magic Bullet V2 Disabled",Image = "rbxassetid://",Time = 5})
+end
+end})
+
+T6:AddToggle({
+Name = "Unknown system (testing)",
+Default = false,
+Callback = function(State)
+bullet.Reverse = State
+end})
+end
+--[[
 T1:AddToggle({
 Name = "Wallbang V2 [Patched]",
 Default = false,
@@ -1022,7 +1085,6 @@ Circle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y /
 T3:AddButton({
 Name = "Anti-Afk",
 Callback = function()
-		local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
    vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
    wait(1)
@@ -1033,7 +1095,7 @@ end})
 T3:AddButton({
 Name = "Anti Lag",
 Callback = function()
-	for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
+for _, v in pairs(game:GetService("Workspace"):GetDescendants()) do
     if v:IsA("BasePart") and not v.Parent:FindFirstChild("Humanoid") then
         v.Material = Enum.Material.SmoothPlastic
         if v:IsA("Texture") then
@@ -1193,6 +1255,6 @@ RunService.RenderStepped:Connect(function()
 BodyColor()
 end)
 
---RunService.RenderStepped:Connect(function()
---RaySystem:Set("Head: \n" .. tostring(RayFromHead()) .. "\nCamera: \n" .. tostring(RayFromCamera()),"Ray System Information")
---end)
+RunService.RenderStepped:Connect(function()
+Circle.Color = Color3.fromRGB(math.floor(((math.sin(workspace.DistributedGameTime/2)/2)+0.5)*255), math.floor(((math.sin(workspace.DistributedGameTime)/2)+0.5)*255), math.floor(((math.sin(workspace.DistributedGameTime*1.5)/2)+0.5)*255))
+end)
