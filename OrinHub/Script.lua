@@ -543,7 +543,7 @@ game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Dire
 end
 end
 end})
-
+--[[
 T1:AddToggle({
 Name = "Auto equip gun",
 Default = false,
@@ -672,6 +672,12 @@ Name = "Damage Tracker",
 Default = false,
 Callback = function(bool)
 ConfirmSystem.Damage = bool
+
+if ConfirmSystem.Damage == true then
+	OrionLib:MakeNotification({Name = "Auto Damage",Content = "Auto Damage Enabled, Damage will spread to zombies around you",Image = "rbxassetid://",Time = 5})
+else
+	OrionLib:MakeNotification({Name = "Auto Damage",Content = "Auto Damage Disabled",Image = "rbxassetid://",Time = 5})
+end
 end})
 
 --[[
@@ -747,11 +753,19 @@ namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	return namecall(Self, ...)
 end)
 
+OrionLib:MakeNotification({Name = "Title!",Content = "",Image = "rbxassetid://",Time = 5})
+
 T6:AddToggle({
 Name = "Bullet Tracker",
 Default = false,
 Callback = function(bool)
 ConfirmSystem.Tracking = bool
+
+if ConfirmSystem.Tracking == true then
+	OrionLib:MakeNotification({Name = "Bullet Tracking",Content = "Bullet Tracker Enabled, The bullet will automatically target the zombies",Image = "rbxassetid://",Time = 5})
+else
+	OrionLib:MakeNotification({Name = "Bullet Tracking",Content = "Bullet Tracker Disabled",Image = "rbxassetid://",Time = 5})
+end
 end})
 
 --[[
