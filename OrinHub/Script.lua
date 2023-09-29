@@ -19,43 +19,49 @@ local Window = OrionLib:MakeWindow({Name = "VIP Turtle Hub V3", HidePremium = fa
 
 local T1 = Window:MakeTab({
    Name = "Farm",
-   Icon = "rbxassetid://4483345998",
+   Icon = "rbxassetid://",
    PremiumOnly = false
 })
 
 local T2 = Window:MakeTab({
    Name = "Tool",
-   Icon = "rbxassetid://4483345998",
+   Icon = "rbxassetid://",
    PremiumOnly = false
 })
 
 local T3 = Window:MakeTab({
    Name = "Anti-Afk",
-   Icon = "rbxassetid://4483345998",
+   Icon = "rbxassetid://",
    PremiumOnly = false
 })
 
 local T4 = Window:MakeTab({
    Name = "Crates",
-   Icon = "rbxassetid://4483345998",
+   Icon = "rbxassetid://",
    PremiumOnly = false
 })
 
 local T5 = Window:MakeTab({
    Name = "Misc",
-   Icon = "rbxassetid://4483345998",
+   Icon = "rbxassetid://",
    PremiumOnly = false
 })
 
 local T6 = Window:MakeTab({
    Name = "Bullet",
-   Icon = "rbxassetid://4483345998",
+   Icon = "rbxassetid://",
    PremiumOnly = false
 })
 
 local T7 = Window:MakeTab({
    Name = "Powerup",
-   Icon = "rbxassetid://4483345998",
+   Icon = "rbxassetid://",
+   PremiumOnly = false
+})
+
+local T8 = Window:MakeTab({
+   Name = "Aura",
+   Icon = "rbxassetid://",
    PremiumOnly = false
 })
 
@@ -75,6 +81,7 @@ local _rs_enemies = {}
 local _rs_bosses = {}
 local _rs_auras = {}
 local vu = game:GetService("VirtualUser")
+local TeleportService = game:GetService('TeleportService')
 OrionLib:AddTable(game:GetService("ReplicatedStorage").Guns,_rs_gun)
 OrionLib:AddTable(game:GetService("ReplicatedStorage").Knives,_rs_knive)
 OrionLib:AddTable(game:GetService("ReplicatedStorage").Enemies,_rs_enemies)
@@ -426,7 +433,7 @@ local zombieConsole = T1:AddParagraph("Zombie & Current map",'You are not a zomb
 T1:AddDropdown({
 Name = "Target Part",
 Default = "Head",
-Options = {"Head", "Torso","Left Leg","Right Leg","Left Arm","Right Arm","HumanoidRootPart"},
+Options = {"Head","Torso","Left Leg","Right Leg","Left Arm","Right Arm","HumanoidRootPart"},
 Callback = function(prtaim)
 _G._ZombieKillPart = prtaim
 end})
@@ -445,7 +452,7 @@ end})
 T4:AddDropdown({
 Name = "Select crates",
 Default = "Basic #1",
-Options = {"Basic #1", "Basic #2","Basic #3","Uncommon","Rare","Legendary"},
+Options = {"Basic #1","Basic #2","Basic #3","Uncommon","Rare","Legendary"},
 Callback = function(list)
 _G._CratesList = list
 end})
@@ -456,6 +463,14 @@ Default = "V1",
 Options = {"V1","V2","V3","V4"},
 Callback = function(list)
 _G._FOVrender = list
+end})
+
+T8:AddDropdown({
+Name = "Select Aura",
+Default = "Plasma Aura",
+Options = _rs_auras,
+Callback = function(list)
+_G._rs_auras = list
 end})
 
 T2:AddButton({
@@ -908,12 +923,29 @@ else
 end
 end})
 
+-- hard: 1632210982
+if game.PlaceId == 1240123653 then
+T5:AddButton({
+Name = "Teleport to hard mode",
+Callback = function()
+TeleportService:Teleport(1632210982)
+end})
+else
+T5:AddButton({
+Name = "Teleport to easy mode",
+Callback = function()
+TeleportService:Teleport(1240123653)
+end})
+end
+
 --getnamecallmethod() == "FindPartOnRayWithWhitelist"
 
 local bullet = {
 	Penetrate_1 = false,
 	penetrate_2 = false,
-	Reverse = false
+	Reverse = false,
+	penetrate_3 = false,
+	penetrate_4 = false
 }
 
 local bulletSystemV1 = nil
@@ -1207,6 +1239,12 @@ _G._BringShit = State
 		end
 	    end
 	end
+end})
+
+T8:AddButton({
+Name = "Equip Aura",
+Callback = function()
+game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("EquipItem",_G._rs_auras,"Aura")
 end})
 
 RunService.RenderStepped:Connect(function()
