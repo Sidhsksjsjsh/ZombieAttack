@@ -886,13 +886,13 @@ TextLabel.TextColor3 = Color3.new(1, 0, 0) -- color
 TextLabel.TextScaled = false -- if the text is scaled or not
 game:GetService("RunService").RenderStepped:Connect(function()
 	for i,v in pairs(game.Workspace.enemies:GetDescendants()) do
-		if v.Parent.Name == "HumanoidRootPart" and v.Parent:FindFirstChild("esp")==nil  then
+		if v.Parent.Name == "HumanoidRootPart" and v.Parent:FindFirstChild("esp") == nil  then
 			TextLabel.Text = v.Parent.Parent.Name
 			BillboardGui:Clone().Parent = v.Parent
 		end
 	end
 end)
-end)]]
+end)
 --[[
 EspProtocol:Add("HumanoidRootPart")
 EspProtocol:Add("Head")
