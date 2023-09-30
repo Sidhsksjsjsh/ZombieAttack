@@ -313,6 +313,18 @@ for _,v in pairs(workspace["map"]:GetChildren()) do
 end
 end
 
+--OrionLib:AddTable(game:GetService("ReplicatedStorage").assets.Auras,_rs_auras)
+function BlacklistedPart()
+local Blacklist = {}
+for _,map in pairs(workspace["map"]:GetChildren()) do
+	for _,VirtualBlacklisted in pairs(map:GetChildren()) do
+		OrionLib:AddTable(VirtualBlacklisted,Blacklist)
+end
+end
+	return Blacklist
+--function end
+end
+
 function uppercase(context)
 	return context:upper()
 end
@@ -692,8 +704,8 @@ gmt.__namecall = newcclosure(function(self, ...)
                       Args[1]["Origin"] = getNearest()[_G._ZombieKillPart].Position
                       Args[1]["Pos"] = getNearest()[_G._ZombieKillPart].Position
 		    return self.FireServer(self, unpack(Args))
-		end
-		if tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and ConfirmSystem.Damage == true then
+		--end
+	        elseif tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and ConfirmSystem.Damage == true then
 		      Args[2] = getEquippedWeapon(Player)
 		      Args[3] = getNearest()[_G._ZombieKillPart]
 		    return self.InvokeServer(self, unpack(Args))
@@ -780,7 +792,7 @@ namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 		local Tracking = checkClosestEntity(_G._FOVrender)
 		if Tracking and ConfirmSystem.Tracking == true then
 			local origin = args[1].Origin
-			args[1] = Ray.new(origin, Tracking.Head.Position - origin)
+			args[1] = Ray.new(origin, Tracking.Head.Position - origin, BlacklistedPart())
 		end
 		return namecall(Self, unpack(args))
 	end
