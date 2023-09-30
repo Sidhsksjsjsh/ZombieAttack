@@ -88,11 +88,12 @@ local _rs_bosses = {}
 local _rs_auras = {}
 local vu = game:GetService("VirtualUser")
 local TeleportService = game:GetService('TeleportService')
-OrionLib:AddTable(game:GetService("ReplicatedStorage").Guns,_rs_gun)
-OrionLib:AddTable(game:GetService("ReplicatedStorage").Knives,_rs_knive)
-OrionLib:AddTable(game:GetService("ReplicatedStorage").Enemies,_rs_enemies)
-OrionLib:AddTable(game:GetService("ReplicatedStorage").Bosses,_rs_bosses)
-OrionLib:AddTable(game:GetService("ReplicatedStorage").assets.Auras,_rs_auras)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+OrionLib:AddTable(ReplicatedStorage.Guns,_rs_gun)
+OrionLib:AddTable(ReplicatedStorage.Knives,_rs_knive)
+OrionLib:AddTable(ReplicatedStorage.Enemies,_rs_enemies)
+OrionLib:AddTable(ReplicatedStorage.Bosses,_rs_bosses)
+OrionLib:AddTable(ReplicatedStorage.assets.Auras,_rs_auras)
 
 
 --// Made by Blissful#4992
@@ -322,6 +323,29 @@ for _,map in pairs(workspace["map"]:GetChildren()) do
 end
 end
 --function end
+end
+
+--[[
+ReplicatedStorage.tasks.taskTemplate.FinishButton.Text
+ReplicatedStorage.tasks.taskTemplate.name.Text
+ReplicatedStorage.tasks.taskTemplate.descTitle.Text
+ReplicatedStorage.tasks.taskTemplate.desc.Text
+ReplicatedStorage.tasks.taskTemplate.progTitle.Text
+ReplicatedStorage.tasks.taskTemplate.prog.Text
+ReplicatedStorage.tasks.taskTemplate.rewardTitle.Text
+ReplicatedStorage.tasks.taskTemplate.reward.Text
+]]
+-- ReplicatedStorage
+local task = {}
+function GetTask()
+	task["Finish"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.FinishButton.Text
+	task["TaskName"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.name.Text
+	task["DescTitle"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.descTitle.Text
+	task["DescTask"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.desc.Text
+	task["ProgTitle"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.progTitle.Text
+	task["ProgTask"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.prog.Text
+	task["RewardTitle"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.rewardTitle.Text
+	task["RewardTask"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.reward.Text
 end
 
 function uppercase(context)
@@ -1316,11 +1340,24 @@ if not v.Head:FindFirstChild("Genta") and not v.Torso:FindFirstChild("Genta") an
     end
 end
 --#
-end]]
+end
 
---RunService.RenderStepped:Connect(function()
---BodyColor()
---end)
+task["Finish"][1][2]["ServerTask"]
+task["TaskName"][1][2]["ServerTask"] done1
+task["DescTitle"][1][2]["ServerTask"] done2
+task["DescTask"][1][2]["ServerTask"] done3
+task["ProgTitle"][1][2]["ServerTask"] done4
+task["ProgTask"][1][2]["ServerTask"] done5
+task["RewardTitle"][1][2]["ServerTask"] done6
+task["RewardTask"][1][2]["ServerTask"] done7
+]]
+
+local Payload = T9:AddParagraph("#task","#task: nil")
+
+RunService.RenderStepped:Connect(function()
+GetTask()
+Payload:Set(string.format("%s \n%s \n%s \n%s \n%s \n%s \n%s",task["TaskName"][1][2]["ServerTask"],task["DescTitle"][1][2]["ServerTask"],task["DescTask"][1][2]["ServerTask"],task["ProgTitle"][1][2]["ServerTask"],task["ProgTask"][1][2]["ServerTask"],task["RewardTitle"][1][2]["ServerTask"],task["RewardTask"][1][2]["ServerTask"]),"Task")
+end)
 
 RunService.RenderStepped:Connect(function()
 Circle.Color = Color3.fromRGB(math.floor(((math.sin(workspace.DistributedGameTime/2)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime*1.5)/2)+0.5)*255))
