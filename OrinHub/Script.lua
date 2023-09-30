@@ -337,7 +337,7 @@ ReplicatedStorage.tasks.taskTemplate.reward.Text
 ]]
 -- ReplicatedStorage
 local task = {}
-function GetTask()
+--[[function GetTask()
 	task["Finish"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.FinishButton.Text
 	task["TaskName"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.name.Text
 	task["DescTitle"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.descTitle.Text
@@ -346,7 +346,7 @@ function GetTask()
 	task["ProgTask"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.prog.Text
 	task["RewardTitle"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.rewardTitle.Text
 	task["RewardTask"][1][2]["ServerTask"] = ReplicatedStorage.tasks.taskTemplate.reward.Text
-end
+end]]
 
 function uppercase(context)
 	return context:upper()
@@ -1354,10 +1354,10 @@ task["RewardTask"][1][2]["ServerTask"] done7
 
 local Payload = T9:AddParagraph("#task","#task: nil")
 
-RunService.RenderStepped:Connect(function()
-GetTask()
-Payload:Set(string.format("%s \n%s \n%s \n%s \n%s \n%s \n%s",task["TaskName"][1][2]["ServerTask"],task["DescTitle"][1][2]["ServerTask"],task["DescTask"][1][2]["ServerTask"],task["ProgTitle"][1][2]["ServerTask"],task["ProgTask"][1][2]["ServerTask"],task["RewardTitle"][1][2]["ServerTask"],task["RewardTask"][1][2]["ServerTask"]),"Task")
-end)
+--RunService.RenderStepped:Connect(function()
+--GetTask()
+--Payload:Set(string.format("%s \n%s \n%s \n%s \n%s \n%s \n%s",task["TaskName"][1][2]["ServerTask"],task["DescTitle"][1][2]["ServerTask"],task["DescTask"][1][2]["ServerTask"],task["ProgTitle"][1][2]["ServerTask"],task["ProgTask"][1][2]["ServerTask"],task["RewardTitle"][1][2]["ServerTask"],task["RewardTask"][1][2]["ServerTask"]),"Task")
+--end)
 
 RunService.RenderStepped:Connect(function()
 Circle.Color = Color3.fromRGB(math.floor(((math.sin(workspace.DistributedGameTime/2)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime*1.5)/2)+0.5)*255))
