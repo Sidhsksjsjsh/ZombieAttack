@@ -313,15 +313,14 @@ for _,v in pairs(workspace["map"]:GetChildren()) do
 end
 end
 
+local Obfuscatedstr = {}
 --OrionLib:AddTable(game:GetService("ReplicatedStorage").assets.Auras,_rs_auras)
 function BlacklistedPart()
-local Blacklist = {}
 for _,map in pairs(workspace["map"]:GetChildren()) do
 	for _,VirtualBlacklisted in pairs(map:GetChildren()) do
-		OrionLib:AddTable(VirtualBlacklisted,Blacklist)
+		OrionLib:AddTable(VirtualBlacklisted,Obfuscatedstr)
 end
 end
-	return Blacklist
 --function end
 end
 
@@ -792,7 +791,7 @@ namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 		local Tracking = checkClosestEntity(_G._FOVrender)
 		if Tracking and ConfirmSystem.Tracking == true then
 			local origin = args[1].Origin
-			args[1] = Ray.new(origin, Tracking.Head.Position - origin, BlacklistedPart())
+			args[1] = Ray.new(origin, Tracking.Head.Position - origin, Obfuscatedstr)
 		end
 		return namecall(Self, unpack(args))
 	end
@@ -806,7 +805,8 @@ Name = "Bullet Tracker",
 Default = false,
 Callback = function(bool)
 ConfirmSystem.Tracking = bool
-
+BlacklistedPart()
+			
 if ConfirmSystem.Tracking == true then
 	OrionLib:MakeNotification({Name = "Bullet Tracking",Content = "Bullet Tracker Enabled, The bullet will automatically target the zombies",Image = "rbxassetid://",Time = 5})
 else
