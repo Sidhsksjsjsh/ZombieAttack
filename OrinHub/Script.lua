@@ -1274,7 +1274,7 @@ Callback = function()
 game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("EquipItem",_G._rs_auras,"Aura")
 end})
 
-T9:AddParagraph("Future Update?","1. Working wallbang/Magic Bullet \n2. Fixed Bullet Tracker bug \n3. Boss is now supported in Bullet Tracker \n4. fixed hwid \n5. Added Vortex Connection (Turtle Hub X Vortex Admin)")
+T9:AddParagraph("Future Update?","1. Working wallbang/Magic Bullet (coming soon) \n2. Fixed Bullet Tracker bug (now) \n3. Boss is now supported in Bullet Tracker (coming soon) \n4. fixed hwid (now) \n5. Added Vortex Connection (Turtle Hub X Vortex Admin) (now)")
 
 RunService.RenderStepped:Connect(function()
 local r,p = pcall(function()
@@ -1293,7 +1293,7 @@ end
 end)
 -- RayFromCamera()
 -- RayFromHead()
-
+--[[
 function BodyColor()
 for _,v in pairs(workspace.BossFolder:GetChildren()) do
 if not v.Head:FindFirstChild("Genta") and not v.Torso:FindFirstChild("Genta") and not v["Right Arm"]:FindFirstChild("Genta") and not v["Left Arm"]:FindFirstChild("Genta") and not v["Right Leg"]:FindFirstChild("Genta") and not v["Left Leg"]:FindFirstChild("Genta") then
@@ -1316,12 +1316,12 @@ if not v.Head:FindFirstChild("Genta") and not v.Torso:FindFirstChild("Genta") an
     end
 end
 --#
-end
+end]]
+
+--RunService.RenderStepped:Connect(function()
+--BodyColor()
+--end)
 
 RunService.RenderStepped:Connect(function()
-BodyColor()
-end)
-
-RunService.RenderStepped:Connect(function()
-Circle.Color = Color3.fromRGB(math.floor(((math.sin(workspace.DistributedGameTime/2)/2)+0.5)*255), math.floor(((math.sin(workspace.DistributedGameTime)/2)+0.5)*255), math.floor(((math.sin(workspace.DistributedGameTime*1.5)/2)+0.5)*255))
+Circle.Color = Color3.fromRGB(math.floor(((math.sin(workspace.DistributedGameTime/2)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime*1.5)/2)+0.5)*255))
 end)
