@@ -65,6 +65,12 @@ local T8 = Window:MakeTab({
    PremiumOnly = false
 })
 
+local T9 = Window:MakeTab({
+   Name = "Update",
+   Icon = "rbxassetid://",
+   PremiumOnly = false
+})
+
 local workspace = game:GetService("Workspace")
 local playerpos = 0
 local zombiepos = 0
@@ -508,7 +514,7 @@ end})
 --EquipGun()
 
 T1:AddToggle({
-Name = "auto holds the weapon while Auto kill is active",
+Name = "Kill with knives",
 Default = false,
 Callback = function(bool)
 _G._userGun = bool
@@ -530,8 +536,7 @@ if _G._tp_farm == false then break end
 if _G._userGun == true then
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
-EquipGun()
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(Player),getNearest()[_G._ZombieKillPart])
 else
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
@@ -557,8 +562,7 @@ if _G._tween_farm == false then break end
 if _G._userGun == true then
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 tweenfunction((getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9)))
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
-EquipGun()
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(Player),getNearest()[_G._ZombieKillPart])
 else
 game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
 Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(0, groundDistance, 9))
@@ -673,6 +677,7 @@ local ConfirmSystem = {
 	Wallbang = false
 }
 
+--game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(Player),getNearest()[_G._ZombieKillPart])
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
 local oldNamecall = gmt.__namecall
@@ -687,6 +692,11 @@ gmt.__namecall = newcclosure(function(self, ...)
                       Args[1]["Origin"] = getNearest()[_G._ZombieKillPart].Position
                       Args[1]["Pos"] = getNearest()[_G._ZombieKillPart].Position
 		    return self.FireServer(self, unpack(Args))
+		end
+		if tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and ConfirmSystem.Damage == true then
+		      Args[2] = getEquippedWeapon(Player)
+		      Args[3] = getNearest()[_G._ZombieKillPart]
+		    return self.InvokeServer(self, unpack(Args))
                 end
                 return oldNamecall(self, ...)
             end)
@@ -777,7 +787,7 @@ namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	return namecall(Self, ...)
 end)
 
-OrionLib:MakeNotification({Name = "Title!",Content = "",Image = "rbxassetid://",Time = 5})
+--OrionLib:MakeNotification({Name = "Title!",Content = "",Image = "rbxassetid://",Time = 5})
 
 T6:AddToggle({
 Name = "Bullet Tracker",
@@ -900,22 +910,27 @@ Callback = function()
 game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("unbox_box",_G._CratesList)
 end})
 
-T5:AddButton({
+local InfiniteJumpEnabled = false
+T5:AddToggle({
 Name = "Infinite Jump",
-Callback = function()
-local InfiniteJumpEnabled = true
+Default = false,
+Callback = function(bool)
+InfiniteJumpEnabled = bool
+end})
+
 game:GetService("UserInputService").JumpRequest:connect(function()
 	if InfiniteJumpEnabled then
 		game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
 	end
 end)
-end})
 
 local ConfirmToggle = false
-T5:AddButton({
-Name = "Gravity",
-Callback = function()
-ConfirmToggle = not ConfirmToggle
+T5:AddToggle({
+Name = "Zero Gravity",
+Default = false,
+Callback = function(bool)
+ConfirmToggle = bool
+			
 if ConfirmToggle == true then
    workspace.Gravity = 0
 else
@@ -1144,7 +1159,7 @@ Callback = function(bool)
 _G._UserKill = bool
 	while wait() do
 	if _G._UserKill == false then break end
-		KillZombies("gun",_G._ZombieKillPart)
+		KillZombies("melee",_G._ZombieKillPart)
 	end
 end})
 
@@ -1246,6 +1261,8 @@ Name = "Equip Aura",
 Callback = function()
 game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("EquipItem",_G._rs_auras,"Aura")
 end})
+
+T9:AddParagraph("Future Update?","1. Working wallbang/Magic Bullet \n2. Fixed Bullet Tracker bug \n3. Boss is now supported in Bullet Tracker \n4. fixed hwid \n5. Added Vortex Connection (Turtle Hub X Vortex Admin)")
 
 RunService.RenderStepped:Connect(function()
 local r,p = pcall(function()
