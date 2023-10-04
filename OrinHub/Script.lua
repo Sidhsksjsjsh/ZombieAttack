@@ -96,6 +96,16 @@ OrionLib:AddTable(ReplicatedStorage.Bosses,_rs_bosses)
 OrionLib:AddTable(ReplicatedStorage.assets.Auras,_rs_auras)
 
 
+function GetCandy()
+for _,arg in pairs(game:GetService("Workspace").Powerups:GetChildren()) do
+	for _,args in pairs(arg:GetChildren()) do
+		if args.Name:FindFirstChild("basketPart") then
+				OrionLib:Teleport(args)
+			end
+		end
+	end
+end
+
 --// Made by Blissful#4992
 --// Locals:
 local camera = workspace.CurrentCamera
@@ -1278,17 +1288,13 @@ _G._discardUserMission = State
 end})
 
 T7:AddToggle({
-Name = "Auto Collect powerup",
+Name = "Auto Collect Candy",
 Default = false,
 Callback = function(State)
 _G._BringShit = State
 	while wait() do
 	     if _G._BringShit == false then break end
-	   for _,v in pairs(game:GetService("Workspace").Powerups.Powerup:GetChildren()) do
-                if v.Name:FindFirstChild("grenadePart") or v.Name:FindFirstChild("godmodePart") or v.Name:FindFirstChild("molotovPart") or v.Name:FindFirstChild("speedboostPart") or v.Name:FindFirstChild("stungrenadePart") then
-			game:GetService("Workspace").Powerups.Powerup[v.Name].CFrame = CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position)
-		end
-	    end
+	     GetCandy()
 	end
 end})
 
