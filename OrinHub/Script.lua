@@ -97,11 +97,9 @@ OrionLib:AddTable(ReplicatedStorage.assets.Auras,_rs_auras)
 
 
 function GetCandy()
-for _,arg in pairs(game:GetService("Workspace").Powerups:GetChildren()) do
-	for _,args in pairs(arg:GetChildren()) do
-		if args.Name:FindFirstChild("basketPart") then
-				OrionLib:Teleport(args)
-			end
+for _,args in pairs(workspace:GetDescendants()) do
+	if args.Name:FindFirstChild("basketPart") or args.Parent == "basketPart" then
+			OrionLib:Teleport(args)
 		end
 	end
 end
