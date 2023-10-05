@@ -98,7 +98,7 @@ OrionLib:AddTable(ReplicatedStorage.assets.Auras,_rs_auras)
 
 function GetCandy()
 for _,args in pairs(workspace:GetDescendants()) do
-	if args.Name:FindFirstChild("basketPart") or args.Parent == "basketPart" then
+	if args.Name == "basketPart" or args.Parent == "basketPart" or args:FindFirstChild("basketPart") then
 			OrionLib:Teleport(args)
 		end
 	end
@@ -1365,4 +1365,16 @@ local Payload = T9:AddParagraph("#task","#task: nil")
 
 RunService.RenderStepped:Connect(function()
 Circle.Color = Color3.fromRGB(math.floor(((math.sin(workspace.DistributedGameTime/2)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime)/2)+0.5)*255),math.floor(((math.sin(workspace.DistributedGameTime*1.5)/2)+0.5)*255))
+end)
+
+Player.leaderstats.Cash:GetPropertyChangedSignal("Value"):Connect(function()
+OrionLib:MakeNotification({Name = "Money Notification",Content = "Money! [ $" .. tostring(Player.leaderstats.Cash.Value) .. " ]",Image = "rbxassetid://",Time = 5})
+end)
+
+Player.leaderstats.Kills:GetPropertyChangedSignal("Value"):Connect(function()
+OrionLib:MakeNotification({Name = "Kill Notification",Content = "You kill zombies! [ 💀 " .. tostring(Player.leaderstats.Kills.Value) .. " ]",Image = "rbxassetid://",Time = 5})
+end)
+
+Player.leaderstats.Level:GetPropertyChangedSignal("Value"):Connect(function()
+OrionLib:MakeNotification({Name = "Level Notification",Content = "Level Up! [ Lv." .. tostring(Player.leaderstats.Level.Value) .. " ]",Image = "rbxassetid://",Time = 5})
 end)
