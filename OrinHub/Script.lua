@@ -66,7 +66,7 @@ local T8 = Window:MakeTab({
 })
 
 local T9 = Window:MakeTab({
-   Name = "Update",
+   Name = "Settings",
    Icon = "rbxassetid://",
    PremiumOnly = false
 })
@@ -99,7 +99,7 @@ OrionLib:AddTable(ReplicatedStorage.assets.Auras,_rs_auras)
 function GetCandy()
 for _,args in pairs(workspace:GetDescendants()) do
 	if args.Name == "basketPart" or args.Parent == "basketPart" or args:FindFirstChild("basketPart") then
-			OrionLib:Teleport(args)
+			OrionLib:Teleport(workspace.Powerups.Powerup.basketPart)
 		end
 	end
 end
@@ -1134,16 +1134,22 @@ end)
 --[[
 T1:AddButton("Bullet track V2", function()
 local oPlBfNRNfyJz = game.Players.LocalPlayer;local ZtYjkXDgMlxc = "Head";local dAociCiEvJMB = function()local QInaUnazu = math.huge;local J8IhabzuN = nil;for iUIhaztYUbnZ,uUhsabzyuG in next, game.Workspace:GetDescendants() do if uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc) and oPlBfNRNfyJz.Character:FindFirstChild(ZtYjkXDgMlxc) and not uUhsabzyuG:FindFirstChild('Guns') and uUhsabzyuG.Parent.Name ~= "deadenemies" then local IIhzabUtd = (uUhsabzyuG:FindFirstChild(ZtYjkXDgMlxc).Position-oPlBfNRNfyJz.Character.Head.Position).magnitude;if IIhzabUtd < QInaUnazu then QInaUnazu = IIhzabUtd;J8IhabzuN = uUhsabzyuG;end;end;end;return J8IhabzuN;end;local GtsZsUbJOuJk = oPlBfNRNfyJz:GetMouse();local tZcInsImQQfX = getrawmetatable(game);local sCtxkbklLnmy = tZcInsImQQfX.__index;setreadonly(tZcInsImQQfX,false);tZcInsImQQfX.__index = newcclosure(function(hFcjBtZBXthW,tGNxqMIMabVS)if hFcjBtZBXthW == GtsZsUbJOuJk and tostring(tGNxqMIMabVS) == "Hit" then return dAociCiEvJMB():FindFirstChild(ZtYjkXDgMlxc).CFrame;end;return sCtxkbklLnmy(hFcjBtZBXthW,tGNxqMIMabVS)end)setreadonly(tZcInsImQQfX,true)
-end)
+end)]]
 
-T1:AddButton("Extended Hitbox", function()
-_G.HeadSize = 25
 local enemies = workspace.enemies
+_G.HeadSize = 25
+
+T1:AddToggle({
+Name = "zombie hitbox",
+Default = false,
+Callback = function(bool)
+_G._hitbox = bool
 while wait() do
+if _G._hitbox == false then break end
   for _,v in next, enemies:GetChildren() do
 if v.Name ~= game:GetService('Players').LocalPlayer.Name then
 pcall(function()
-       v.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
+       v.HumanoidRootPart.Size = Vector3.new(25,25,25)
      v.HumanoidRootPart.Material = "Neon"
        v.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
        v.HumanoidRootPart.Transparency = 0.7
@@ -1152,8 +1158,8 @@ end)
 end
   end
 end
-end)
-
+end})
+--[[
 T6:AddTextBox("Hi", function(e)
 Player.PlayerGui.Aim.hitmarker.Image = "rbxassetid://" .. e
 end)
@@ -1296,13 +1302,40 @@ _G._BringShit = State
 	end
 end})
 
+local control = {
+	Money = true,
+	Kill = true,
+	Level = true
+}
+
+T9:AddToggle({
+Name = "Money Notification",
+Default = false,
+Callback = function(State)
+control.Money = State
+end})
+
+T9:AddToggle({
+Name = "Kill Notification",
+Default = false,
+Callback = function(State)
+control.Kill = State
+end})
+
+T9:AddToggle({
+Name = "Level Up Notification",
+Default = true,
+Callback = function(State)
+control.Level = State
+end})
+
 T8:AddButton({
 Name = "Equip Aura",
 Callback = function()
 game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("EquipItem",_G._rs_auras,"Aura")
 end})
 
-T9:AddParagraph("Future Update?","1. Working wallbang/Magic Bullet (coming soon) \n2. Fixed Bullet Tracker bug (now) \n3. Boss is now supported in Bullet Tracker (coming soon) \n4. fixed hwid (now) \n5. Added Vortex Connection (Turtle Hub X Vortex Admin) (now)")
+--T9:AddParagraph("Future Update?","1. Working wallbang/Magic Bullet (coming soon) \n2. Fixed Bullet Tracker bug (now) \n3. Boss is now supported in Bullet Tracker (coming soon) \n4. fixed hwid (now) \n5. Added Vortex Connection (Turtle Hub X Vortex Admin) (now)")
 
 RunService.RenderStepped:Connect(function()
 local r,p = pcall(function()
@@ -1356,7 +1389,7 @@ task["RewardTitle"][1][2]["ServerTask"] done6
 task["RewardTask"][1][2]["ServerTask"] done7
 ]]
 
-local Payload = T9:AddParagraph("#task","#task: nil")
+--local Payload = T9:AddParagraph("#task","#task: nil")
 
 --RunService.RenderStepped:Connect(function()
 --GetTask()
@@ -1368,13 +1401,19 @@ Circle.Color = Color3.fromRGB(math.floor(((math.sin(workspace.DistributedGameTim
 end)
 
 Player.leaderstats.Cash:GetPropertyChangedSignal("Value"):Connect(function()
+if control.Money == true then
 OrionLib:MakeNotification({Name = "Money Notification",Content = "Money! [ $" .. tostring(Player.leaderstats.Cash.Value) .. " ]",Image = "rbxassetid://",Time = 5})
+end
 end)
 
 Player.leaderstats.Kills:GetPropertyChangedSignal("Value"):Connect(function()
-OrionLib:MakeNotification({Name = "Kill Notification",Content = "You kill zombies! [ 💀 " .. tostring(Player.leaderstats.Kills.Value) .. " ]",Image = "rbxassetid://",Time = 5})
+if control.Kill == true then
+OrionLib:MakeNotification({Name = "Kill Notification",Content = "You kill zombies with " .. tostring(getEquippedWeapon(Player)) .. "! [ 💀 " .. tostring(Player.leaderstats.Kills.Value) .. " ]",Image = "rbxassetid://",Time = 5})
+end
 end)
 
 Player.leaderstats.Level:GetPropertyChangedSignal("Value"):Connect(function()
+if control.Level == true then
 OrionLib:MakeNotification({Name = "Level Notification",Content = "Level Up! [ Lv." .. tostring(Player.leaderstats.Level.Value) .. " ]",Image = "rbxassetid://",Time = 5})
+end
 end)
