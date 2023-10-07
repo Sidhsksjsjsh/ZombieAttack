@@ -72,7 +72,7 @@ local T9 = Window:MakeTab({
 })
 
 local T10 = Window:MakeTab({
-   Name = "Hitboxes",
+   Name = "Wallbang",
    Icon = "rbxassetid://",
    PremiumOnly = false
 })
