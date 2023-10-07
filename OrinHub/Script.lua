@@ -1151,9 +1151,9 @@ local oPlBfNRNfyJz = game.Players.LocalPlayer;local ZtYjkXDgMlxc = "Head";local 
 end)]]
 
 local enemies = workspace.enemies
-_G.HeadSize = 25
+local vbosses = workspace.BossFolder
 
-Tab:AddSlider({
+T10:AddSlider({
    Name = "Wallbang Percentage/Rate/Rasio",
    Min = 0,
    Max = 250,
@@ -1166,6 +1166,34 @@ Tab:AddSlider({
   end    
 })
 
+function hbzombie(a_,b_)
+for _,v in next, enemies:GetChildren() do
+if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+pcall(function()
+       v[a_].Size = Vector3.new(b_,b_,b_)
+     --v[_G._hitboxes].Material = "Neon"
+       --v[].BrickColor = BrickColor.new("Really blue")
+       v[a_].Transparency = 1
+       v[a_].CanCollide = false
+end)
+end
+end
+end
+
+function hbbosszombie(a_,b_)
+for _,v in next, vbosses:GetChildren() do
+if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+pcall(function()
+       v[a_].Size = Vector3.new(b_,b_,b_)
+     --v[_G._hitboxes].Material = "Neon"
+       --v[].BrickColor = BrickColor.new("Really blue")
+       v[a_].Transparency = 1
+       v[a_].CanCollide = false
+end)
+end
+end
+end
+
 T10:AddToggle({ -- alternative wallbang
 Name = "Wallbang",
 Default = false,
@@ -1173,17 +1201,8 @@ Callback = function(bool)
 _G._hitbox = bool
 while wait() do
 if _G._hitbox == false then break end
-  for _,v in next, enemies:GetChildren() do
-if v.Name ~= game:GetService('Players').LocalPlayer.Name then
-pcall(function()
-       v[_G._hitboxes].Size = Vector3.new(tonumber(_G._rate),tonumber(_G._rate),tonumber(_G._rate))
-     --v[_G._hitboxes].Material = "Neon"
-       --v[].BrickColor = BrickColor.new("Really blue")
-       v[_G._hitboxes].Transparency = 1
-       v[_G._hitboxes].CanCollide = false
-end)
-end
-  end
+hbzombie(_G._hitboxes,tonumber(_G._rate))
+hbbosszombie(_G._hitboxes,tonumber(_G._rate))
 end
 end})
 --[[
