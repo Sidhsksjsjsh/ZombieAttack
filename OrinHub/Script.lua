@@ -1153,19 +1153,6 @@ end)]]
 local enemies = workspace.enemies
 local vbosses = workspace.BossFolder
 
-T10:AddSlider({
-   Name = "Wallbang Percentage/Rate/Rasio",
-   Min = 0,
-   Max = 250,
-   Default = 100,
-   Color = Color3.fromRGB(255,255,255),
-   Increment = 1,
-   ValueName = "% (recommendation: 100%)",
-   Callback = function(Value)
-     _G._rate = Value - 50
-  end    
-})
-
 function hbzombie(a_,b_)
 for _,v in next, enemies:GetChildren() do
 if v.Name ~= game:GetService('Players').LocalPlayer.Name then
@@ -1201,8 +1188,8 @@ Callback = function(bool)
 _G._hitbox = bool
 while wait() do
 if _G._hitbox == false then break end
-hbzombie(_G._hitboxes,tonumber(_G._rate))
-hbbosszombie(_G._hitboxes,tonumber(_G._rate))
+hbzombie(_G._hitboxes,25)
+hbbosszombie(_G._hitboxes,25)
 end
 end})
 --[[
