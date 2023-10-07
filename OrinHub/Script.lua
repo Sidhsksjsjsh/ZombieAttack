@@ -71,6 +71,12 @@ local T9 = Window:MakeTab({
    PremiumOnly = false
 })
 
+local T10 = Window:MakeTab({
+   Name = "Hitboxes",
+   Icon = "rbxassetid://",
+   PremiumOnly = false
+})
+
 local workspace = game:GetService("Workspace")
 local playerpos = 0
 local zombiepos = 0
@@ -485,6 +491,14 @@ Default = "Head",
 Options = {"Head","Torso","Left Leg","Right Leg","Left Arm","Right Arm","HumanoidRootPart"},
 Callback = function(prtaim)
 _G._ZombieKillPart = prtaim
+end})
+
+T10:AddDropdown({
+Name = "Select Wallbang Target Part",
+Default = "Head",
+Options = {"Head","Torso","Left Leg","Right Leg","Left Arm","Right Arm","HumanoidRootPart","humanoid"},
+Callback = function(wb)
+_G._hitboxes = wb
 end})
 
 T2:AddDropdown({
@@ -1139,8 +1153,21 @@ end)]]
 local enemies = workspace.enemies
 _G.HeadSize = 25
 
-T1:AddToggle({
-Name = "zombie hitbox",
+Tab:AddSlider({
+   Name = "Wallbang Percentage/Rate/Rasio",
+   Min = 0,
+   Max = 250,
+   Default = 100,
+   Color = Color3.fromRGB(255,255,255),
+   Increment = 1,
+   ValueName = "% (recommendation: 100%)",
+   Callback = function(Value)
+     _G._rate = Value - 50
+  end    
+})
+
+T10:AddToggle({ -- alternative wallbang
+Name = "Wallbang",
 Default = false,
 Callback = function(bool)
 _G._hitbox = bool
@@ -1149,11 +1176,11 @@ if _G._hitbox == false then break end
   for _,v in next, enemies:GetChildren() do
 if v.Name ~= game:GetService('Players').LocalPlayer.Name then
 pcall(function()
-       v.HumanoidRootPart.Size = Vector3.new(25,25,25)
-     v.HumanoidRootPart.Material = "Neon"
-       v.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
-       v.HumanoidRootPart.Transparency = 0.7
-       v.HumanoidRootPart.CanCollide = false
+       v[_G._hitboxes].Size = Vector3.new(tonumber(_G._rate),tonumber(_G._rate),tonumber(_G._rate))
+     --v[_G._hitboxes].Material = "Neon"
+       --v[].BrickColor = BrickColor.new("Really blue")
+       v[_G._hitboxes].Transparency = 1
+       v[_G._hitboxes].CanCollide = false
 end)
 end
   end
