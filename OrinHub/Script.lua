@@ -102,6 +102,8 @@ OrionLib:AddTable(ReplicatedStorage.Bosses,_rs_bosses)
 OrionLib:AddTable(ReplicatedStorage.assets.Auras,_rs_auras)
 
 local AutoCollectSystemIndic = false
+local AutoCollectSystemIndic2 = false
+
 --c.ChildAdded:Connect(listenToChildrenChanges)
 --c.ChildRemoved:Connect(listenToChildrenChanges)
 --Workspace.Powerups.Powerup.presentPart
@@ -120,7 +122,21 @@ for i,v in pairs(args:GetDescendants()) do
     end
 end
 
-workspace.ChildAdded:Connect(GetPresents)
+local function GetPwr(args)
+for i,v in pairs(args:GetDescendants()) do
+	if args.Name ~= "presentPart" and AutoCollectSystemIndic2 == true and v:IsA("TouchTransmitter") then
+		TouchSystem(v)
+	end
+    end
+end
+
+workspace.Powerups.ChildAdded:Connect(function(variable)
+	variable.ChildAdded:Connect(GetPresents)
+end)
+
+workspace.Powerups.ChildAdded:Connect(function(variable)
+	variable.ChildAdded:Connect(GetPwr)
+end)
 
 --// Made by Blissful#4992
 --// Locals:
@@ -1341,6 +1357,14 @@ T7:AddToggle({
    Default = false,
    Callback = function(State)
       AutoCollectSystemIndic = State
+   end
+})
+
+T7:AddToggle({
+   Name = "Auto Collect All Powerups (Except Presents)",
+   Default = false,
+   Callback = function(State)
+      AutoCollectSystemIndic2 = State
    end
 })
 
