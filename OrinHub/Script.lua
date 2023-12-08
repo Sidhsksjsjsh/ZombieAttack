@@ -110,13 +110,13 @@ local AutoCollectSystemIndic2 = false
 
 local function TouchSystem(part)
 	firetouchinterest(part,Player.Character.HumanoidRootPart,0)
-	wait(0)
+	wait(0.5)
 	firetouchinterest(part,Player.Character.HumanoidRootPart,1)
 end
 
 workspace.Powerups.ChildAdded:Connect(function(variable)
 for i,v in pairs(variable:GetDescendants()) do
-	if AutoCollectSystemIndic == true and v:IsA("TouchTransmitter") then
+	if AutoCollectSystemIndic == true and v:IsA("TouchTransmitter") or v:IsA("TouchInterest") then
 		TouchSystem(v)
 	end
     end
