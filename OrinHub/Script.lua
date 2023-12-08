@@ -54,7 +54,7 @@ local T6 = Window:MakeTab({
 })
 
 local T7 = Window:MakeTab({
-   Name = "Powerup",
+   Name = "Presents",
    Icon = "rbxassetid://",
    PremiumOnly = false
 })
@@ -101,14 +101,26 @@ OrionLib:AddTable(ReplicatedStorage.Enemies,_rs_enemies)
 OrionLib:AddTable(ReplicatedStorage.Bosses,_rs_bosses)
 OrionLib:AddTable(ReplicatedStorage.assets.Auras,_rs_auras)
 
+local AutoCollectSystemIndic = false
+--c.ChildAdded:Connect(listenToChildrenChanges)
+--c.ChildRemoved:Connect(listenToChildrenChanges)
+--Workspace.Powerups.Powerup.presentPart
 
-function GetCandy()
-for _,args in pairs(workspace:GetDescendants()) do
-	if args.Name == "basketPart" or args.Parent == "basketPart" or args:FindFirstChild("basketPart") then
-			OrionLib:Teleport(workspace.Powerups.Powerup.basketPart)
-		end
-	end
+local function TouchSystem(part)
+	firetouchinterest(part,Player.Character.HumanoidRootPart,0)
+	wait(0)
+	firetouchinterest(part,Player.Character.HumanoidRootPart,1)
 end
+
+local function GetPresents(args)
+for i,v in pairs(args:GetDescendants()) do
+	if args.Name == "presentPart" and AutoCollectSystemIndic == true and v:IsA("TouchTransmitter") then
+		TouchSystem(v)
+	end
+    end
+end
+
+workspace.ChildAdded:Connect(GetPresents)
 
 --// Made by Blissful#4992
 --// Locals:
@@ -1325,15 +1337,12 @@ _G._discardUserMission = State
 end})
 
 T7:AddToggle({
-Name = "Auto Collect Candy",
-Default = false,
-Callback = function(State)
-_G._BringShit = State
-	while wait() do
-	     if _G._BringShit == false then break end
-	     GetCandy()
-	end
-end})
+   Name = "Auto Collect Presents",
+   Default = false,
+   Callback = function(State)
+      AutoCollectSystemIndic = State
+   end
+})
 
 local control = {
 	Money = true,
