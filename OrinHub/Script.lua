@@ -114,28 +114,12 @@ local function TouchSystem(part)
 	firetouchinterest(part,Player.Character.HumanoidRootPart,1)
 end
 
-local function GetPresents(args)
-for i,v in pairs(args:GetDescendants()) do
-	if args.Name == "presentPart" and AutoCollectSystemIndic == true and v:IsA("TouchTransmitter") then
+workspace.Powerups.ChildAdded:Connect(function(variable)
+for i,v in pairs(variable:GetDescendants()) do
+	if AutoCollectSystemIndic == true and v:IsA("TouchTransmitter") then
 		TouchSystem(v)
 	end
     end
-end
-
-local function GetPwr(args)
-for i,v in pairs(args:GetDescendants()) do
-	if args.Name ~= "presentPart" and AutoCollectSystemIndic2 == true and v:IsA("TouchTransmitter") then
-		TouchSystem(v)
-	end
-    end
-end
-
-workspace.Powerups.ChildAdded:Connect(function(variable)
-	variable.ChildAdded:Connect(GetPresents)
-end)
-
-workspace.Powerups.ChildAdded:Connect(function(variable)
-	variable.ChildAdded:Connect(GetPwr)
 end)
 
 --// Made by Blissful#4992
@@ -1353,18 +1337,10 @@ _G._discardUserMission = State
 end})
 
 T7:AddToggle({
-   Name = "Auto Collect Presents",
+   Name = "Auto Collect All Powerups",
    Default = false,
    Callback = function(State)
       AutoCollectSystemIndic = State
-   end
-})
-
-T7:AddToggle({
-   Name = "Auto Collect All Powerups (Except Presents)",
-   Default = false,
-   Callback = function(State)
-      AutoCollectSystemIndic2 = State
    end
 })
 
