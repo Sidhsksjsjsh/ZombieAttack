@@ -869,7 +869,7 @@ namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 		if Tracking and ConfirmSystem.Tracking == true then
 			if _G.wb_cheat == true then
 				wallbang(args[1].Origin,Tracking.Head,function(magicbullet)
-					args[1] = Ray.new(magicbullet,Tracking.Head.Position - magicbullet,Obfuscatedstr)
+					args[1] = Ray.new(magicbullet,(magicbullet - Tracking.Head.Position).unit * 500)
 				end)
 			else
 			        args[1] = Ray.new(args[1].Origin,Tracking.Head.Position - args[1].Origin,Obfuscatedstr)
