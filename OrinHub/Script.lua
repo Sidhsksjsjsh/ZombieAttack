@@ -847,7 +847,7 @@ Circle.Transparency = tonumber(e)
 end})
 
 local function wallbang(pos,vic,func)
-    local ray = Ray.new(pos,vic.Position - pos,Obfuscatedstr)
+    local ray = Ray.new(pos,(pos - Player.Character.HumanoidRootPart.Position).unit * 500)
     local hitPart,hitPosition = workspace:FindPartOnRay(ray,workspace,true,true)
     if hitPart then
         func(hitPosition)
