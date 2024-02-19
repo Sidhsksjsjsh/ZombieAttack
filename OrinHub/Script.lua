@@ -343,11 +343,15 @@ end
 local Obfuscatedstr = {}
 --OrionLib:AddTable(game:GetService("ReplicatedStorage").assets.Auras,_rs_auras)
 function BlacklistedPart()
-for _,map in pairs(workspace["map"]:GetChildren()) do
+workspace.ChildAdded:Connect(function(p)
+if p.Name == "map" then
+for _,map in pairs(p:GetChildren()) do
 	for _,VirtualBlacklisted in pairs(map:GetChildren()) do
 		OrionLib:AddTable(VirtualBlacklisted,Obfuscatedstr)
 end
 end
+end
+end)
 --function end
 end
 
@@ -842,34 +846,55 @@ Callback = function(e)
 Circle.Transparency = tonumber(e)
 end})
 
+local function wallbang(pos,vic,func)
+    local ray = Ray.new(pos,vic.Position - pos,Obfuscatedstr)
+    local hitPart,hitPosition = workspace:FindPartOnRay(ray,workspace,true,true)
+    if hitPart then
+        func(hitPosition)
+    end
+end
+
+T6:AddToggle({
+   Name = "Wallbang ( working )",
+   Default = false,
+   Callback = function(bool)
+	_G.wb_cheat = bool
+end})
+
 local namecall;
 namecall = hookmetamethod(game, "__namecall", function(Self, ...)
 	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
 		local args = {...}
 		local Tracking = checkClosestEntity(_G._FOVrender)
 		if Tracking and ConfirmSystem.Tracking == true then
-			local origin = args[1].Origin
-			args[1] = Ray.new(origin, Tracking.Head.Position - origin, Obfuscatedstr)
+			if _G.wb_cheat == true then
+				wallbang(args[1].Origin,Tracking.Head,function(magicbullet)
+					args[1] = Ray.new(magicbullet,Tracking.Head.Position - magicbullet,Obfuscatedstr)
+				end)
+			else
+			        args[1] = Ray.new(args[1].Origin,Tracking.Head.Position - args[1].Origin,Obfuscatedstr)
+			end
 		end
 		return namecall(Self, unpack(args))
 	end
 	return namecall(Self, ...)
 end)
+--wallbang(pos,function(wallbang)
 
 --OrionLib:MakeNotification({Name = "Title!",Content = "",Image = "rbxassetid://",Time = 5})
 
 T6:AddToggle({
-Name = "Bullet Tracker",
-Default = false,
-Callback = function(bool)
-ConfirmSystem.Tracking = bool
-BlacklistedPart()
+   Name = "Bullet Tracker",
+   Default = false,
+   Callback = function(bool)
+      ConfirmSystem.Tracking = bool
+      BlacklistedPart()
 			
-if ConfirmSystem.Tracking == true then
-	OrionLib:MakeNotification({Name = "Bullet Tracking",Content = "Bullet Tracker Enabled, The bullet will automatically target the zombies",Image = "rbxassetid://",Time = 5})
-else
-	OrionLib:MakeNotification({Name = "Bullet Tracking",Content = "Bullet Tracker Disabled",Image = "rbxassetid://",Time = 5})
-end
+      if ConfirmSystem.Tracking == true then
+	      OrionLib:MakeNotification({Name = "Bullet Tracking",Content = "Bullet Tracker Enabled, The bullet will automatically target the zombies",Image = "rbxassetid://",Time = 5})
+      else
+	      OrionLib:MakeNotification({Name = "Bullet Tracking",Content = "Bullet Tracker Disabled",Image = "rbxassetid://",Time = 5})
+      end
 end})
 
 --[[
